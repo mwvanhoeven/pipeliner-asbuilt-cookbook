@@ -2,9 +2,9 @@
 
 Practical AI agent recipes for pipeline asbuilt work.
 
-Each recipe is a conversation protocol: what to tell the agent, in what order, what to expect back, and what to watch for. No programming required. Any capable AI agent with file access and code execution will work — Claude, ChatGPT, or similar.
+Each recipe is a prompt template. Copy the sample prompt from the chapter, paste it into Claude or ChatGPT, attach the file it asks for, and follow the conversation. Or paste the chapter URL directly into your AI chat and ask it to follow the recipe. No programming required.
 
-The recipes are written for people doing the work — surveyors, field engineers, data managers. They assume you know what a bore log is, what a weld tally looks like, and why the anchor step matters. They do not assume you know how to code.
+The recipes are written for people doing the work — surveyors, field engineers, data managers. They assume you know what a bore log is, what a weld tally looks like, and why the anchor step matters. They do not assume you know how to code. Any capable AI agent with file access and code execution will work — Claude, ChatGPT, or similar.
 
 ---
 
