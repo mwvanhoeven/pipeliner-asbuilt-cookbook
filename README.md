@@ -14,6 +14,7 @@ Each recipe is a conversation protocol — what to tell the agent, in what order
 | 02   | [Weld Position Calculator](02_weld_positions/)          | Push joint lengths along an anchored 3D polyline to get a weld CSV |
 | 03   | [Pipe Photo Rename](03_pipe_photo_rename/)              | Batch-rename pipe photos from the identifier written on each pipe |
 | 04   | [MTR Data Extraction](04_mtr_extraction/)               | Pull structured data from material test reports and inspection certificates into a CSV |
+| 05   | [Ahead-Back Diagonal Check](05_ahead_back_check/)       | Find heat, joint, and attribute mismatches across adjacent welds |
 
 ---
 
