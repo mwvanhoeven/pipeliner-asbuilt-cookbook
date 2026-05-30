@@ -71,15 +71,12 @@ all rows where any of them change from the previous row. Sort by station.
 A CSV of transition points only — one row per detected transition, named
 to make its purpose clear (e.g. `redriver_material_transitions.csv`).
 
-Each row includes:
+The rows are your original data, verbatim. Every column from your weld
+table is preserved exactly as it came in. The file is a subset, not a
+reshape — pull it into Data Halo or any other tool without translation.
 
-- The station and weld number of the transition point
-- The attributes that changed — before and after values, side by side
-- A gap flag if the transition immediately follows a data gap
-
-This is a discrete file. It does not modify your original weld table.
-Import it into Data Halo as a separate layer, patch it into your project,
-or use it to annotate alignment sheets.
+The only columns that may differ from the source are CODE and POINT_ID,
+if you chose to recode or renumber (see below).
 
 ---
 
