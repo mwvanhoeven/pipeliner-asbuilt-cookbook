@@ -25,4 +25,11 @@ Recipes 01 and 02 are designed to run in sequence — 01 produces the DXF that 0
 
 ---
 
+## Supporting documents
+
+- [REFERENCE.md](REFERENCE.md) — column name recognition lists used across recipes. If a recipe says "the agent recognizes these column names," the full list is here.
+- [CONTRIBUTING.md](CONTRIBUTING.md) — how to add a recipe. Reviews are done by a human and an agent together.
+
+---
+
 *Recipes by [Data Halo](https://datahalo.asbuilt.systems) — pipeline survey and asbuilt software.*
