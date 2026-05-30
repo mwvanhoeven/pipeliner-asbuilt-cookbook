@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<FeatureCodingDefinitions SchemaVersion="3" xmlns="http://trimble.com/schema/fxl" CreationDate="{creation_date}" DateModified="{creation_date}">
+    <FeatureDefinitions>
+
+        <!-- Repeat PointFeatureDefinition for each code -->
+        <PointFeatureDefinition Code="{CODE}" Name="{Feature Name}" Category="Data Dictionary File">
+            <Attributes>
+
+                <!-- String attribute (free text) -->
+                <StringAttribute Name="{NAME}" EntryMethod="Required" DefaultValue="{default}"/>
+                <!-- Omit DefaultValue if none -->
+
+                <!-- List attribute (menu) -->
+                <ListAttribute Name="{NAME}" EntryMethod="Required" DefaultItemIndex="0">
+                    <ListItems>
+                        <Item>{item1}</Item>
+                        <Item>{item2}</Item>
+                    </ListItems>
+                </ListAttribute>
+                <!-- Omit DefaultItemIndex if no default; EntryMethod can be Optional -->
+
+                <!-- Float/double attribute -->
+                <DoubleAttribute Name="{NAME}" NumberOfDecimals="3" MinimumValue="-9999" MaximumValue="9999" EntryMethod="Optional" DefaultValue="{default}"/>
+
+                <!-- Integer attribute -->
+                <IntegerAttribute Name="{NAME}" MinimumValue="0" MaximumValue="9999" EntryMethod="Optional" DefaultValue="{default}"/>
+
+                <!-- Photo attribute -->
+                <PhotoAttribute Name="{NAME}" EntryMethod="Optional"/>
+
+                <!-- Date attribute (user enters) -->
+                <DateAttribute Name="{NAME}" EntryMethod="Optional" AnnotationFormat="d"/>
+
+                <!-- Date attribute (auto-stamped, no user entry) -->
+                <DateAttribute Name="{NAME}" EntryMethod="AutoGenerate" AnnotationFormat="d"/>
+
+            </Attributes>
+        </PointFeatureDefinition>
+
+    </FeatureDefinitions>
+</FeatureCodingDefinitions>
