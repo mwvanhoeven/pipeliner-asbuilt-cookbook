@@ -24,7 +24,7 @@ If your workflow requires proprietary software to execute, it is not a recipe fo
 ## How to contribute
 
 1. Fork this repository
-2. Create a new chapter folder: `05_your_chapter_name/`
+2. Create a new chapter folder: `NN_your_chapter_name/` where NN is the next available number
 3. Add a `README.md` following the structure of an existing chapter
 4. Open a pull request
 
