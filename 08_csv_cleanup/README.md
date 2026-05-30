@@ -39,12 +39,18 @@ failed. Can you find what's wrong?
 ## What the agent checks
 
 ### Encoding
-The file's character encoding is normalized to UTF-8 without BOM. Excel
-defaults to UTF-8 with a byte-order mark — an invisible three-byte
-sequence at the start of the file that most import systems handle, but
-some don't. Other encoding problems (Windows-1252, Latin-1, mixed
-encodings from copy-paste) are detected and converted. Any characters
-that don't survive the conversion cleanly are flagged individually.
+The file's character encoding is normalized to clean UTF-8 without BOM.
+Excel defaults to UTF-8 with a byte-order mark — an invisible three-byte
+sequence at the start of the file. Other encoding problems (Windows-1252,
+Latin-1, mixed encodings from copy-paste) are detected and converted.
+
+Non-ASCII characters deserve special attention. Data Halo reads CSV files
+as ASCII, replacing any byte it can't interpret with a `?`. That means a
+degree symbol, an accented character, or a smart quote pasted from a PDF
+won't cause an error on import — it will silently become a question mark
+in the database. The agent flags every non-ASCII character by row and
+column so you can decide whether to remove it, replace it, or leave it
+knowing what it becomes.
 
 ### Line endings
 Mixed or non-standard line endings (Windows CRLF, old Mac CR, mixed
@@ -53,8 +59,11 @@ within the same file) are normalized to standard LF.
 ### Empty rows
 Rows where every cell is empty or contains only whitespace are detected
 and listed. This includes rows that *look* empty in Excel but contain a
-space, a tab, or a formula result of `""`. The agent reports how many
-and where, and asks before removing them.
+space, a tab, or a formula result of `""`. Data Halo requires at least
+one alphanumeric character per row — a row of commas or spaces alone will
+be silently dropped on import, which can shift row alignment in ways that
+are hard to trace. The agent reports how many and where, and asks before
+removing them.
 
 ### Empty columns
 Columns with no header name are flagged as likely artifacts — the result
@@ -69,14 +78,24 @@ a must-confirm before any fix — the user needs to decide which column to
 keep, which to drop, or how to rename them. Silently dropping one would
 lose data.
 
-### Undesirable characters
-The agent scans for characters that commonly cause import failures:
-non-breaking spaces (often pasted from web content or PDFs), smart quotes
-and curly apostrophes (from Word or email), null bytes, control
-characters, and other non-printable characters. Each is reported with the
-column and row where it appears. The agent asks before replacing or
-removing them, since some may be legitimate — a degree symbol in a
-notes field, for example, is probably fine.
+### Forbidden characters — file name
+The following characters are not permitted in the CSV file name itself:
+`+` `/` `&` `%` `'` `#` `?` `"` `,`
+
+If your file name contains any of these, rename it before importing. The
+agent will flag this if it finds them.
+
+### Forbidden characters — attribute values
+The following characters are not permitted in attribute value cells:
+`'` `"` `@` `$` `*` `~` `?` `#` `\`
+
+These will cause a validation failure on import. The agent reports every
+cell where they appear and asks before removing or replacing them.
+
+### Forbidden characters — file name values
+If your CSV has a file name column (a column identifying the source file
+for each point), those values have a slightly extended forbidden set:
+`'` `"` `@` `$` `*` `~` `?` `#` `/` `(` `)` `!`
 
 ### Leading and trailing whitespace in values
 Values with leading or trailing spaces look correct in Excel but can cause
@@ -99,8 +118,9 @@ confirmation.
 
 Some findings are judgment calls. A column named `NOTES` with no values
 might be a data gap or a template column the user wants to keep. A
-non-breaking space in a comments field might be legitimate. The agent
-flags and asks — it does not decide.
+non-ASCII character in a comments field might be a legitimate symbol or
+might be garbage from a copy-paste. The agent flags and asks — it does
+not decide.
 
 ---
 
