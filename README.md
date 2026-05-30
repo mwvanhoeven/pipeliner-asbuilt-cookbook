@@ -21,6 +21,7 @@ The recipes are written for people doing the work — surveyors, field engineers
 | 07 | [FXL Builder](07_fxl_builder/) | A Trimble field coding file built from a point file, a spreadsheet, or a guided conversation |
 | 08 | [CSV Pre-Import Cleanup](08_csv_cleanup/) | A cleaned CSV with a plain-English report of everything Excel was hiding |
 | 09 | [Wrong-Way Elbow Detector](09_wrong_way_elbow/) | A marked DXF with flagged vertices where the pipeline bends against its own trend |
+| 10 | [Alignment Deflection Report](10_deflection_report/) | An Excel workbook of deflection angles at each alignment vertex, ready to hand to the field crew |
 
 Recipes 01 and 02 are designed to run in sequence — 01 produces the DXF that 02 consumes.
 
