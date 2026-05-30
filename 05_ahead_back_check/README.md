@@ -27,15 +27,15 @@ Projects with only one pair work. Projects with six pairs work. Projects
 with no pairs at all will produce a spreadsheet with nothing to check —
 the agent will tell you.
 
-If your CSV has a station column — any column with "sta" in the name — the
-agent will sort the welds by station and detect gaps. A gap is a stretch
-of pipe longer than one joint with no weld recorded — usually a segment
-break, an uninspected bore, or data not yet in. The threshold is
-project-specific; the rule of thumb is slightly longer than a nominal
-joint. Eighty-foot pipe: use 85. Forty-foot pipe: use 50. If you don't
-say, the agent uses 85. Station values in engineer's notation (100+00.00)
-are converted to decimal automatically. If two station columns are present,
-the decimal one is used.
+If your CSV has a station column, the agent will sort the welds by station
+and detect gaps. A gap is a stretch of pipe longer than one joint with no
+weld recorded — usually a segment break, an uninspected bore, or data not
+yet in. The threshold is project-specific; the rule of thumb is slightly
+longer than a nominal joint. Eighty-foot pipe: use 85. Forty-foot pipe:
+use 50. If you don't say, the agent uses 85.
+
+See [REFERENCE.md](../REFERENCE.md#station) for how station columns are
+recognized and how engineer's notation is handled.
 
 If there is no station column, the agent takes the rows in the order they
 appear. You are responsible for sort order. Gap detection does not run.
