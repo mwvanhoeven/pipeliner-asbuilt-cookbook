@@ -11,8 +11,8 @@ it corrects back on the next segment.
 
 On a map, a wrong-way elbow looks like a spike or a kink. The human eye
 catches it instantly. In a coordinate table, it's invisible. This recipe
-finds them automatically and marks them in the DXF so the field crew
-knows exactly where to go.
+finds them automatically and marks the results so the field crew knows
+exactly where to go.
 
 This recipe works in 2D — plan view only. Anomalies in the vertical
 profile are a separate problem.
@@ -22,25 +22,44 @@ profile are a separate problem.
 ## What you need
 
 A DXF file containing the pipeline as a single polyline, or as line
-segments that can be joined into one. Multiple disconnected polylines
-in the same file are supported — the agent will process each separately.
+segments that can be joined into one — or a CSV of coordinates. Both
+inputs are supported. The agent prefers a single continuous sequence;
+declare the input format in your prompt.
 
-If your file has multiple polylines that represent a single continuous
-pipeline, tell the agent. It will attempt to join them in order before
-running the check.
+**DXF input:** The agent extracts polyline vertices directly. Multiple
+disconnected polylines in the same file are processed separately. If
+they represent one continuous pipeline, tell the agent and it will
+attempt to join them in order before running the check.
+
+**CSV input:** The agent recognizes Northing and Easting columns using
+the standard names in [REFERENCE.md](../REFERENCE.md#northing). If a
+station column is present, the agent sorts by station before running the
+check — using the same recognition and engineer's notation conversion as
+other recipes. See [REFERENCE.md](../REFERENCE.md#station). Without a
+station column, rows are taken in the order they appear; sort order is
+your responsibility.
 
 The agent works in plan view (X, Y only). Z values are ignored.
 
 ---
 
-## Sample prompt
+## Sample prompts
 
+**DXF input:**
 ```
 Here is a DXF of the Brazos River lateral. Check it for wrong-way
 elbows — vertices where the pipe bends back against its own trend.
 Mark any you find and give me the DXF back.
 
 [attach DXF]
+```
+
+**CSV input:**
+```
+Here is a coordinate CSV of my pipeline centerline, sorted by station.
+Check it for wrong-way elbows and give me back a marked DXF.
+
+[attach CSV]
 ```
 
 Or if you want to set the sensitivity:
@@ -57,8 +76,8 @@ under 20 feet. Flag anything over 10 degrees of reversal.
 
 ## What the agent is doing
 
-The agent walks the polyline vertex by vertex in 2D. At each vertex it
-calculates:
+The agent walks the coordinate sequence vertex by vertex in 2D. At each
+vertex it calculates:
 
 - The **incoming bearing** — direction of the segment arriving at this vertex
 - The **outgoing bearing** — direction of the segment leaving this vertex
@@ -87,19 +106,21 @@ different value if your 3-point elbows tend to span more than that.
 
 ## What you get
 
-A DXF file with the original polyline intact, plus a new layer named
-`WRONG_WAY_ELBOWS`. On that layer, each flagged vertex gets:
+**If your input was a DXF:** A DXF file with the original polyline
+intact, plus a new layer named `WRONG_WAY_ELBOWS`. On that layer, each
+flagged vertex gets a circle and a text label with the distance along
+the polyline from the start and the reversal angle
+(e.g. `STA 4823.4 — reversal 31°`). The layer can be toggled off in
+CAD or Civil 3D. The original geometry is not modified.
 
-- A circle centered on the vertex
-- A text label with the distance along the polyline from the start and
-  the reversal angle (e.g. `STA 4823.4 — reversal 31°`)
+**If your input was a CSV:** Tell the agent what you need —  a new DXF
+containing the reconstructed polyline with flagged vertices marked, or
+a CSV of the flagged coordinates with reversal details for you to map
+yourself. The agent will produce whichever you ask for, or both.
 
-The layer can be toggled off in CAD or Civil 3D when it isn't needed.
-The original geometry is not modified.
-
-The agent also provides a plain-English summary: how many vertices were
-flagged, where they are, and what the reversal angle was at each one.
-If nothing was flagged, it says so.
+In either case the agent provides a plain-English summary: how many
+vertices were flagged, where they are, and the reversal angle at each
+one. If nothing was flagged, it says so.
 
 ---
 
@@ -121,7 +142,12 @@ use older format versions or non-standard entity types. If the agent
 reports a parse error, try re-exporting from Civil 3D or AutoCAD as
 DXF R2010 or later.
 
-**Multiple polylines processed as separate pipelines** — If your file
+**CSV rows are out of order and there's no station column** — Sort the
+CSV by station before attaching, or add a station column so the agent
+can sort it. See [REFERENCE.md](../REFERENCE.md#station) for recognized
+station column names.
+
+**Multiple polylines processed as separate pipelines** — If your DXF
 has segments that belong to one continuous pipeline but are stored as
 separate entities, tell the agent to join them before running the check.
 Provide the order if it isn't obvious from the coordinates.
