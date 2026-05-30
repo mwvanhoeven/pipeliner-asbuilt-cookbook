@@ -32,12 +32,9 @@ they represent one continuous pipeline, tell the agent and it will
 attempt to join them in order before running the check.
 
 **CSV input:** The agent recognizes Northing and Easting columns using
-the standard names in [REFERENCE.md](../REFERENCE.md#northing). If a
-station column is present, the agent sorts by station before running the
-check — using the same recognition and engineer's notation conversion as
-other recipes. See [REFERENCE.md](../REFERENCE.md#station). Without a
-station column, rows are taken in the order they appear; sort order is
-your responsibility.
+the standard names in [REFERENCE.md](../REFERENCE.md#northing). For
+station column recognition, sorting behavior, and engineer's notation
+conversion, see [REFERENCE.md](../REFERENCE.md#station).
 
 The agent works in plan view (X, Y only). Z values are ignored.
 
@@ -113,7 +110,7 @@ the polyline from the start and the reversal angle
 (e.g. `STA 4823.4 — reversal 31°`). The layer can be toggled off in
 CAD or Civil 3D. The original geometry is not modified.
 
-**If your input was a CSV:** Tell the agent what you need —  a new DXF
+**If your input was a CSV:** Tell the agent what you need — a new DXF
 containing the reconstructed polyline with flagged vertices marked, or
 a CSV of the flagged coordinates with reversal details for you to map
 yourself. The agent will produce whichever you ask for, or both.
@@ -144,8 +141,7 @@ DXF R2010 or later.
 
 **CSV rows are out of order and there's no station column** — Sort the
 CSV by station before attaching, or add a station column so the agent
-can sort it. See [REFERENCE.md](../REFERENCE.md#station) for recognized
-station column names.
+can sort it. See [REFERENCE.md](../REFERENCE.md#station).
 
 **Multiple polylines processed as separate pipelines** — If your DXF
 has segments that belong to one continuous pipeline but are stored as

@@ -27,18 +27,11 @@ Projects with only one pair work. Projects with six pairs work. Projects
 with no pairs at all will produce a spreadsheet with nothing to check —
 the agent will tell you.
 
-If your CSV has a station column, the agent will sort the welds by station
-and detect gaps. A gap is a stretch of pipe longer than one joint with no
-weld recorded — usually a segment break, an uninspected bore, or data not
-yet in. The threshold is project-specific; the rule of thumb is slightly
-longer than a nominal joint. Eighty-foot pipe: use 85. Forty-foot pipe:
-use 50. If you don't say, the agent uses 85.
-
-See [REFERENCE.md](../REFERENCE.md#station) for how station columns are
-recognized and how engineer's notation is handled.
-
-If there is no station column, the agent takes the rows in the order they
-appear. You are responsible for sort order. Gap detection does not run.
+If your CSV has a station column, the agent sorts by station, detects
+gaps, and marks segment breaks in the output. The default gap threshold
+is 85 feet — tell the agent your nominal joint length if different. See
+[REFERENCE.md](../REFERENCE.md#station) for the full station handling
+behavior, column name recognition, and engineer's notation conversion.
 
 ---
 
@@ -94,9 +87,9 @@ your columns use something else (fwd, rev, in, out), rename them before
 running.
 
 **Welds are out of order** — Your CSV has a station column but the values
-aren't sorting as expected. If stations are in engineer's notation, the
-agent converts them automatically. If the sort still looks wrong, convert
-to decimal feet before attaching.
+aren't sorting as expected. See [REFERENCE.md](../REFERENCE.md#station)
+for how engineer's notation is handled. If the sort still looks wrong,
+convert to decimal feet before attaching.
 
 **Red on every back cell in the first row of a segment** — This is correct
 behavior. The first weld after a gap has no valid pair above it; the thick

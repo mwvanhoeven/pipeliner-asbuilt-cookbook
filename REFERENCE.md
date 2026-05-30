@@ -35,9 +35,30 @@ ELEV_COORDS, ELEV COORDS, ELEV.
 
 ## Station
 
-Any column whose name contains **sta** (case-insensitive). If two station
-columns are present, the decimal one is used. Engineer's notation
-(100+00.00) is converted to decimal automatically.
+**Column name recognition:** Any column whose name contains **sta**
+(case-insensitive) is treated as a station column. Examples that match:
+STATION, STA, STA., STATION NO, PIPE_STA, WELD_STATION. If two station
+columns are present, the decimal one is used.
+
+**Engineer's notation:** Station values in plus notation (e.g. 100+00.00,
+52+17.43) are converted to decimal feet automatically before sorting or
+gap detection.
+
+**Behavior when station is present:**
+- Rows are sorted by station before any processing
+- Gap detection runs automatically using the nominal joint length as
+  threshold (default 85 feet; tell the agent your joint length if
+  different)
+- The first row after a gap has no valid prior row to compare against
+  and is treated accordingly — flagged, excluded from diagonal
+  comparisons, or marked as a segment start depending on the recipe
+
+**Behavior when station is absent:**
+- Rows are taken in the order they appear in the file
+- Sort order is the user's responsibility
+- Gap detection does not run
+- If you tell the agent the file is already in station order, it will
+  proceed without sorting; if order is uncertain, sort before attaching
 
 ## File Name
 

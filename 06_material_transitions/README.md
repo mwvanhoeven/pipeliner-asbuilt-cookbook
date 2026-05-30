@@ -28,20 +28,8 @@ If your column names are ambiguous, tell the agent which ones to watch.
 WELD_NO, COMMENTS, and administrative fields will be skipped unless you
 ask for them.
 
-If your CSV has a station column — any column with "sta" in the name —
-the agent will sort by station before comparing. Without a station column,
-rows are taken in the order they appear. If the data is not already in
-station order, say so; sort it before handing it over or tell the agent
-which column to use.
-
-Station values in engineer's notation (100+00.00) are converted to
-decimal automatically.
-
-Gap detection works the same as in the ahead-back check. If a gap is
-present, the first weld after the gap is always treated as a transition —
-there is no valid prior row to compare against. Those rows are flagged in
-the output. The default gap threshold is 85 feet; tell the agent your
-nominal joint length if your pipe is shorter.
+For station column recognition, sorting, gap detection, and engineer's
+notation conversion, see [REFERENCE.md](../REFERENCE.md#station).
 
 ---
 
@@ -136,7 +124,8 @@ normalizes case and whitespace by default; tell it if numeric fields need
 rounding.
 
 **Transitions at every row** — The data is not sorted. Either provide a
-station column or sort the CSV before attaching.
+station column or sort the CSV before attaching. See
+[REFERENCE.md](../REFERENCE.md#station).
 
 **First row is always flagged** — The first weld has no prior row. It will
 always appear as a transition. This is expected; it marks the beginning
@@ -144,8 +133,8 @@ of the string.
 
 **Gap rows flagging all attributes** — If a gap introduces a new segment,
 the first weld after the gap will show all attributes as changed — there
-is nothing to compare against. The gap flag identifies these rows. Filter
-on `gap_flag = False` to see only mid-segment transitions.
+is nothing to compare against. Those rows are treated as segment starts.
+Filter them out to see only mid-segment transitions.
 
 **Code or point identifier column not recognized** — See
 [REFERENCE.md](../REFERENCE.md) for the full list of recognized names.
