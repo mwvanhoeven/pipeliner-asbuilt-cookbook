@@ -79,7 +79,15 @@ done, it renders the file.
 | INTEGER | Whole number | Weld number, joint count |
 | PHOTO | Photo capture | Pipe end photos, damage documentation |
 | DATE | Date, user enters | Survey date when crew sets it manually |
-| DATE_AUTO | Date, auto-stamped | Survey date when collector sets it automatically |
+| DATE_AUTO | Date, auto-stamped | Survey date set automatically by the collector at the moment of shot |
+
+DATE vs DATE_AUTO is a workflow decision, not a data question. If the
+crew is expected to enter or confirm the date — because shots may be
+processed or backdated in the office — use DATE. If the collector should
+own the timestamp and no crew input is wanted, use DATE_AUTO. Most
+pipeline survey workflows use DATE_AUTO for the shot date and DATE for
+any contractually significant date the crew must affirm. If you're not
+sure, the agent will ask.
 
 ---
 
