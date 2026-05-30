@@ -75,8 +75,8 @@ The rows are your original data, verbatim. Every column from your weld
 table is preserved exactly as it came in. The file is a subset, not a
 reshape — pull it into Data Halo or any other tool without translation.
 
-The only columns that may differ from the source are CODE and POINT_ID,
-if you chose to recode or renumber (see below).
+The only columns that may differ from the source are the code and point
+identifier columns, if you chose to recode or renumber (see below).
 
 ---
 
@@ -93,11 +93,17 @@ After finding the transitions, the agent will ask:
    FEATURE CODES, FEATURE_CODES. If found, it will offer to replace the
    existing code value on each transition row with a new one you specify.
 
-2. **Renumber POINT_ID?** — If your data has a POINT_ID column, the agent
-   will offer to renumber the transition rows. Tell it whether you want a
-   prefix, a suffix, or plain sequential integers, and what the pattern
-   should be. For example: prefix `MT-` produces MT-1, MT-2, MT-3.
-   Suffix `_T` produces 1_T, 2_T, 3_T. Plain sequential starts at 1.
+2. **Renumber point identifier?** — The agent looks for a point identifier
+   column. It recognizes a wide range of names used across data collectors
+   and office software: P, POINT, POINT ID, POINT_ID, POINT IDS,
+   POINT_IDS, ID, IDS, PNUM, NAME, NAMES, POINT NUMBER, POINT_NUMBER,
+   POINT NUMBERS, POINT_NUMBERS, POINT NO, POINT_NO, POINT NOS,
+   POINT_NOS, POINT NAME, POINT_NAME, POINT NAMES, POINT_NAMES, PT#,
+   #POINTID, #P, PTNUM. If found, it will offer to renumber the
+   transition rows. Tell it whether you want a prefix, a suffix, or plain
+   sequential integers, and what the pattern should be. For example:
+   prefix `MT-` produces MT-1, MT-2, MT-3. Suffix `_T` produces
+   1_T, 2_T, 3_T. Plain sequential starts at 1.
 
 Both are optional. If you don't need them, say so and the agent skips
 ahead.
@@ -148,6 +154,9 @@ on `gap_flag = False` to see only mid-segment transitions.
 **Code column not recognized** — Your column name isn't in the recognized
 set (CODE, CODES, FEATURE CODE, FEATURE_CODE, FEATURE CODES,
 FEATURE_CODES). Tell the agent the exact column name and it will use it.
+
+**Point identifier column not recognized** — Your column name isn't in the
+recognized set. Tell the agent the exact column name and it will use it.
 
 ---
 
