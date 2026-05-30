@@ -17,6 +17,7 @@ The recipes are written for people doing the work — surveyors, field engineers
 | 03 | [Pipe Photo Rename](03_pipe_photo_rename/) | A renamed photo batch — Claude reads the identifier written on each pipe and renames the file |
 | 04 | [MTR Data Extraction](04_mtr_extraction/) | Structured data pulled from material test reports and inspection certificates into a CSV |
 | 05 | [Ahead-Back Diagonal Check](05_ahead_back_check/) | An Excel workbook that flags heat, joint, and attribute mismatches across adjacent welds |
+| 06 | [Material Transition Finder](06_material_transitions/) | A CSV of transition points where pipe spec changes, ready to import or patch into your project |
 
 Recipes 01 and 02 are designed to run in sequence — 01 produces the DXF that 02 consumes.
 
