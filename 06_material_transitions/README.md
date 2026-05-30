@@ -88,22 +88,18 @@ the same schema as the weld table but a different CODE value.
 
 After finding the transitions, the agent will ask:
 
-1. **Recode?** — The agent looks for a code column in your data. It
-   recognizes these names: CODE, CODES, FEATURE CODE, FEATURE_CODE,
-   FEATURE CODES, FEATURE_CODES. If found, it will offer to replace the
-   existing code value on each transition row with a new one you specify.
+1. **Recode?** — The agent looks for a code column in your data using the
+   recognized names in [REFERENCE.md](../REFERENCE.md#code). If found, it
+   will offer to replace the existing code value on each transition row
+   with a new one you specify.
 
 2. **Renumber point identifier?** — The agent looks for a point identifier
-   column. It recognizes a wide range of names used across data collectors
-   and office software: P, POINT, POINT ID, POINT_ID, POINT IDS,
-   POINT_IDS, ID, IDS, PNUM, NAME, NAMES, POINT NUMBER, POINT_NUMBER,
-   POINT NUMBERS, POINT_NUMBERS, POINT NO, POINT_NO, POINT NOS,
-   POINT_NOS, POINT NAME, POINT_NAME, POINT NAMES, POINT_NAMES, PT#,
-   #POINTID, #P, PTNUM. If found, it will offer to renumber the
-   transition rows. Tell it whether you want a prefix, a suffix, or plain
-   sequential integers, and what the pattern should be. For example:
-   prefix `MT-` produces MT-1, MT-2, MT-3. Suffix `_T` produces
-   1_T, 2_T, 3_T. Plain sequential starts at 1.
+   column using the recognized names in
+   [REFERENCE.md](../REFERENCE.md#point-identifier). If found, it will
+   offer to renumber the transition rows. Tell it whether you want a
+   prefix, a suffix, or plain sequential integers, and what the pattern
+   should be. For example: prefix `MT-` produces MT-1, MT-2, MT-3.
+   Suffix `_T` produces 1_T, 2_T, 3_T. Plain sequential starts at 1.
 
 Both are optional. If you don't need them, say so and the agent skips
 ahead.
@@ -151,12 +147,9 @@ the first weld after the gap will show all attributes as changed — there
 is nothing to compare against. The gap flag identifies these rows. Filter
 on `gap_flag = False` to see only mid-segment transitions.
 
-**Code column not recognized** — Your column name isn't in the recognized
-set (CODE, CODES, FEATURE CODE, FEATURE_CODE, FEATURE CODES,
-FEATURE_CODES). Tell the agent the exact column name and it will use it.
-
-**Point identifier column not recognized** — Your column name isn't in the
-recognized set. Tell the agent the exact column name and it will use it.
+**Code or point identifier column not recognized** — See
+[REFERENCE.md](../REFERENCE.md) for the full list of recognized names.
+Tell the agent the exact column name and it will use it.
 
 ---
 
