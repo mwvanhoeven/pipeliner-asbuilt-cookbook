@@ -21,6 +21,16 @@ If your workflow requires proprietary software to execute, it is not a recipe fo
 
 ---
 
+## On included scripts
+
+Some chapters include a ready-made Python script in the chapter folder. These are not proprietary — they are the straightforward implementation of the algorithm the chapter describes, the same code any capable agent would write given the recipe. Including them is hospitality: the user saves tokens, gets consistent behavior, and isn't dependent on the agent improvising the same logic fresh each session.
+
+If your recipe has a stable, well-defined algorithm, consider including a script. If the recipe is conversational by design — like the FXL builder — leave it agent-driven.
+
+Scripts that exist only because they are clever do not belong here. Scripts that exist because the algorithm is precise and the consistency matters do.
+
+---
+
 ## How to contribute
 
 1. Fork this repository
@@ -46,4 +56,4 @@ If you think you have found not just an issue but a fix — or a new recipe — 
 
 ---
 
-*Cookbook by [Data Halo](https://data-halo.com) — pipeline survey and asbuilt software.*
+*Cookbook by [Data Halo](https://datahalo.asbuilt.systems) — pipeline survey and asbuilt software.*
