@@ -17,11 +17,12 @@ hundreds of welds by eye is the job this recipe automates.
 
 ## What you need
 
-A CSV of weld points with paired ahead/back columns. The agent recognizes
-these direction words: **ahead**, **ah**, **back**, **bk** — in any case,
-with or without a separator. Any attribute that appears in both an ahead
-and a back column will be checked. If your direction words are something
-else, rename the columns before handing the file to the agent.
+A CSV of weld points with ahead and back columns. Any attribute that
+appears in both directions will be checked. Columns without a direction
+word are treated as ahead by default — see
+[REFERENCE.md](../REFERENCE.md#direction-words) for the full recognition
+rules, pairing logic, and what to do if your direction words aren't
+recognized.
 
 Projects with only one pair work. Projects with six pairs work. Projects
 with no pairs at all will produce a spreadsheet with nothing to check —
@@ -82,9 +83,9 @@ The red is driven by a live formula. Nothing needs to be rerun.
 ## Troubleshooting
 
 **No red cells, but I know there are mismatches** — Check that your
-direction words are recognized. The agent handles ahead/ah/back/bk. If
-your columns use something else (fwd, rev, in, out), rename them before
-running.
+direction words are recognized. See
+[REFERENCE.md](../REFERENCE.md#direction-words) for the recognized forms.
+If your columns use something else, rename them before running.
 
 **Welds are out of order** — Your CSV has a station column but the values
 aren't sorting as expected. See [REFERENCE.md](../REFERENCE.md#station)
