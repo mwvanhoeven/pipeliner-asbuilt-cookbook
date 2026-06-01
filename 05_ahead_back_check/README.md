@@ -55,8 +55,7 @@ highlighted.
 ## Sample prompt
 
 ```
-I have a weld CSV from the Brazos River crossing. Pipe is 40-foot joints.
-Run the ahead-back check and give me an Excel file. Use a gap threshold of 50.
+Brazos River crossing, 40-foot joints. Run the ahead-back check.
 
 [attach CSV]
 ```
@@ -64,8 +63,7 @@ Run the ahead-back check and give me an Excel file. Use a gap threshold of 50.
 Or without a station column:
 
 ```
-Here is my weld data. It's already in station order. Run the ahead-back
-check and give me an Excel file.
+File is already in station order. Run the ahead-back check.
 
 [attach CSV]
 ```
