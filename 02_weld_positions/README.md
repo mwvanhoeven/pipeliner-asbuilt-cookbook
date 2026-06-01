@@ -18,25 +18,6 @@ You have an anchored 3D DXF polyline — the bore path, placed on real surveyed 
 
 ---
 
-## Sample prompt
-
-```
-I've anchored my bore polyline in CAD. Here is the updated DXF file.
-
-Please calculate weld positions along this polyline using these joint lengths:
-40.25
-40.10
-39.95
-40.33
-...
-
-Please give me a CSV with columns: Weld, Northing, Easting, Elevation, Length Ahead.
-```
-
-Joint lengths can be space-separated, comma-separated, or one per line. Paste from Excel works.
-
----
-
 ## Field reference
 
 | Field             | What to enter                       | Notes                                                        |
@@ -67,6 +48,25 @@ Endpoint, 5431944.22, 345891.05, 830.50, 0
 ```
 
 Ready for import into survey data management systems, or for checking against crossing surveys and profile data.
+
+---
+
+## Sample prompt
+
+```
+I've anchored my bore polyline in CAD. Here is the updated DXF file.
+
+Please calculate weld positions along this polyline using these joint lengths:
+40.25
+40.10
+39.95
+40.33
+...
+
+Please give me a CSV with columns: Weld, Northing, Easting, Elevation, Length Ahead.
+```
+
+Joint lengths can be space-separated, comma-separated, or one per line. Paste from Excel works.
 
 ---
 
