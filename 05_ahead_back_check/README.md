@@ -36,6 +36,22 @@ behavior, column name recognition, and engineer's notation conversion.
 
 ---
 
+## What you get
+
+An Excel workbook with your data as it came in — same columns, same order,
+same values. If a station column was present, rows are sorted by station;
+otherwise the original row order is preserved.
+
+Where an ahead value on one weld disagrees with the back value on the next,
+both cells are filled pale red. The user decides which is wrong. The
+comparison ignores case and leading or trailing spaces.
+
+A thick horizontal line marks a gap in the station sequence. Welds on
+either side of a gap have no valid pair to check against and will not be
+highlighted.
+
+---
+
 ## Sample prompt
 
 ```
@@ -53,22 +69,6 @@ check and give me an Excel file.
 
 [attach CSV]
 ```
-
----
-
-## What you get
-
-An Excel workbook with your data as it came in — same columns, same order,
-same values. If a station column was present, rows are sorted by station;
-otherwise the original row order is preserved.
-
-Where an ahead value on one weld disagrees with the back value on the next,
-both cells are filled pale red. The user decides which is wrong. The
-comparison ignores case and leading or trailing spaces.
-
-A thick horizontal line marks a gap in the station sequence. Welds on
-either side of a gap have no valid pair to check against and will not be
-highlighted.
 
 ---
 
