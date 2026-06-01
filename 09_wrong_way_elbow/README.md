@@ -40,37 +40,6 @@ The agent works in plan view (X, Y only). Z values are ignored.
 
 ---
 
-## Sample prompts
-
-**DXF input:**
-```
-Here is a DXF of the Brazos River lateral. Check it for wrong-way
-elbows — vertices where the pipe bends back against its own trend.
-Mark any you find and give me the DXF back.
-
-[attach DXF]
-```
-
-**CSV input:**
-```
-Here is a coordinate CSV of my pipeline centerline, sorted by station.
-Check it for wrong-way elbows and give me back a marked DXF.
-
-[attach CSV]
-```
-
-Or if you want to set the sensitivity:
-
-```
-Here is my pipeline DXF. Find vertices where the deflection reverses
-against the local trend and at least one of the flanking segments is
-under 20 feet. Flag anything over 10 degrees of reversal.
-
-[attach DXF]
-```
-
----
-
 ## What the agent is doing
 
 The agent walks the coordinate sequence vertex by vertex in 2D. At each
@@ -118,6 +87,37 @@ yourself. The agent will produce whichever you ask for, or both.
 In either case the agent provides a plain-English summary: how many
 vertices were flagged, where they are, and the reversal angle at each
 one. If nothing was flagged, it says so.
+
+---
+
+## Sample prompts
+
+**DXF input:**
+```
+Here is a DXF of the Brazos River lateral. Check it for wrong-way
+elbows — vertices where the pipe bends back against its own trend.
+Mark any you find and give me the DXF back.
+
+[attach DXF]
+```
+
+**CSV input:**
+```
+Here is a coordinate CSV of my pipeline centerline, sorted by station.
+Check it for wrong-way elbows and give me back a marked DXF.
+
+[attach CSV]
+```
+
+Or if you want to set the sensitivity:
+
+```
+Here is my pipeline DXF. Find vertices where the deflection reverses
+against the local trend and at least one of the flanking segments is
+under 20 feet. Flag anything over 10 degrees of reversal.
+
+[attach DXF]
+```
 
 ---
 
