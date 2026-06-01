@@ -4,6 +4,20 @@ If you have a workflow that works — one you have actually used in the field �
 
 ---
 
+## Not sure how to contribute? Start here.
+
+You don't need a GitHub account or any technical knowledge to improve this cookbook. If something didn't work, or if you found a better way, your agent can handle the mechanics.
+
+Just tell it:
+
+- "Something in chapter 4 broke on my data — can you open an issue in the cookbook?"
+- "We found a better way to handle X — can you draft a contribution?"
+- "I want to suggest a new recipe idea — can you submit it?"
+
+Your agent knows what to do. The humans here will take it from there.
+
+---
+
 ## What belongs here
 
 A recipe is a conversation protocol. It tells a field person what to say to an agent, in what order, and what to expect back. It does not require programming knowledge, a Data Halo account, or any specific tool beyond a capable AI agent with code execution.
