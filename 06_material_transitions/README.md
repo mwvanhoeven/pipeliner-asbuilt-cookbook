@@ -33,24 +33,13 @@ notation conversion, see [REFERENCE.md](../REFERENCE.md#station).
 
 ---
 
-## Sample prompt
+## What the agent is doing
 
-```
-Here is my weld tally for the Red River crossing. Find all material
-transitions — I care about COATING, WT, GRADE, and MANUFACTURER.
-Pipe is 40-foot joints.
-
-[attach CSV]
-```
-
-Or if you want the agent to decide:
-
-```
-Here is my weld CSV. Identify the material attribute columns and find
-all rows where any of them change from the previous row. Sort by station.
-
-[attach CSV]
-```
+The agent sorts the weld table by station, then walks the rows in order.
+At each row it compares the selected attribute values to the row above.
+If any value differs, that row is a transition. The transition row is the
+first weld carrying the new material — which is the standard convention
+for recording transitions in the field.
 
 ---
 
@@ -94,13 +83,24 @@ ahead.
 
 ---
 
-## What the agent is doing
+## Sample prompt
 
-The agent sorts the weld table by station, then walks the rows in order.
-At each row it compares the selected attribute values to the row above.
-If any value differs, that row is a transition. The transition row is the
-first weld carrying the new material — which is the standard convention
-for recording transitions in the field.
+```
+Here is my weld tally for the Red River crossing. Find all material
+transitions — I care about COATING, WT, GRADE, and MANUFACTURER.
+Pipe is 40-foot joints.
+
+[attach CSV]
+```
+
+Or if you want the agent to decide:
+
+```
+Here is my weld CSV. Identify the material attribute columns and find
+all rows where any of them change from the previous row. Sort by station.
+
+[attach CSV]
+```
 
 ---
 
