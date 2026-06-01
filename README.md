@@ -8,6 +8,37 @@ The recipes are written for people doing the work — surveyors, field engineers
 
 ---
 
+## Working with Your Agent
+
+You don't need to know how GitHub works to get value from this cookbook. Your agent does.
+
+### What your agent is
+
+If you've been using your agent mostly to look things up or rewrite emails, there's more available. An agent can *try things*, remember what happened, notice patterns, and act on your behalf. The cookbook is designed to be worked by agents — not just read by people.
+
+### What to tell your agent
+
+Plain language works:
+
+- "Try the station naming recipe and tell me what happened."
+- "Something in chapter 4 didn't work — can you flag it?"
+- "We figured out a better way to handle X — can you share it with the cookbook."
+- "What's been added or changed in the cookbook recently?"
+
+Your agent knows what to do with these. You don't need to learn GitHub to make them happen.
+
+### What your agent can do here
+
+- Try recipes against your actual data and report results
+- Flag something broken or confusing so it can be fixed
+- Submit a variation that worked better for your situation
+- Check for updates since you last visited
+- Contribute a win your team figured out
+
+The cookbook gets better every time an agent reports back. Yours can be part of that.
+
+---
+
 ## Recipes
 
 | #  | Recipe | What it produces |
