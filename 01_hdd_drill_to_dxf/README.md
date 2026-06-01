@@ -21,30 +21,6 @@ Before you talk to your agent, find these things:
 
 ---
 
-## Sample prompt
-
-```
-I have an HDD drill report I need to convert to a 3D DXF polyline.
-
-Beginning point (N, E, Elev): 5432100.00, 345678.00, 892.50
-Foresight point (N, E, Elev): 5432050.00, 345900.00, 892.50
-Elevations in the table are real-world (absolute).
-
-Away, Elevation, Lateral:
-100.00, 880.20, 0.00
-200.00, 862.45, 0.00
-300.00, 845.10, 2.50
-400.00, 832.00, 2.50
-500.00, 830.50, 0.00
-...
-
-Please produce a 3D DXF polyline from this data and give me a file I can download.
-```
-
-Paste-from-Excel works. Commas or tabs both work.
-
----
-
 ## Field reference
 
 | Field              | What to enter                                     | Notes                                                        |
@@ -74,6 +50,30 @@ The agent places a 3D point for each row, connects them in sequence, and outputs
 A 3D DXF file containing a single polyline. Each vertex corresponds to a row in your away/elevation/lateral table, plus the entry point.
 
 If the agent returns a WKT linestring or JSON coordinate list instead of a DXF, ask it to convert that to a 3D DXF in the same conversation.
+
+---
+
+## Sample prompt
+
+```
+I have an HDD drill report I need to convert to a 3D DXF polyline.
+
+Beginning point (N, E, Elev): 5432100.00, 345678.00, 892.50
+Foresight point (N, E, Elev): 5432050.00, 345900.00, 892.50
+Elevations in the table are real-world (absolute).
+
+Away, Elevation, Lateral:
+100.00, 880.20, 0.00
+200.00, 862.45, 0.00
+300.00, 845.10, 2.50
+400.00, 832.00, 2.50
+500.00, 830.50, 0.00
+...
+
+Please produce a 3D DXF polyline from this data and give me a file I can download.
+```
+
+Paste-from-Excel works. Commas or tabs both work.
 
 ---
 
