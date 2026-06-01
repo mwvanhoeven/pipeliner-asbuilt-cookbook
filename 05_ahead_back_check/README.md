@@ -58,15 +58,17 @@ check and give me an Excel file.
 
 ## What you get
 
-An Excel workbook. One row per weld, in station order if station was
-present. The ahead and back columns for each tracked attribute sit
-side by side. Where a back value disagrees with the ahead value on the
-row above, the cell is filled pale red. The comparison ignores case and
-leading or trailing spaces.
+An Excel workbook with your data as it came in — same columns, same order,
+same values. If a station column was present, rows are sorted by station;
+otherwise the original row order is preserved.
 
-A thick horizontal line marks a gap in the sequence. The weld below that
-line has no valid pair above it and will not show red on its back values
-— there is nothing to compare against.
+Where an ahead value on one weld disagrees with the back value on the next,
+both cells are filled pale red. The user decides which is wrong. The
+comparison ignores case and leading or trailing spaces.
+
+A thick horizontal line marks a gap in the station sequence. Welds on
+either side of a gap have no valid pair to check against and will not be
+highlighted.
 
 ---
 
@@ -91,10 +93,6 @@ If your columns use something else, rename them before running.
 aren't sorting as expected. See [REFERENCE.md](../REFERENCE.md#station)
 for how engineer's notation is handled. If the sort still looks wrong,
 convert to decimal feet before attaching.
-
-**Red on every back cell in the first row of a segment** — This is correct
-behavior. The first weld after a gap has no valid pair above it; the thick
-border is the signal. Those cells will always be empty or unverifiable.
 
 **The gap threshold is flagging joints that aren't gaps** — Your pipe is
 shorter than the default 85-foot assumption. Tell the agent the nominal
