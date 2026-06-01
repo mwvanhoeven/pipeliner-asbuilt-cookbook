@@ -46,9 +46,9 @@ Where an ahead value on one weld disagrees with the back value on the next,
 both cells are filled pale red. The user decides which is wrong. The
 comparison ignores case and leading or trailing spaces.
 
-A thick horizontal line marks a gap in the station sequence. Welds on
-either side of a gap have no valid pair to check against and will not be
-highlighted.
+If a station column was present, a thick horizontal line marks each gap in
+the station sequence. Welds on either side of a gap have no valid pair to
+check against and will not be highlighted.
 
 ---
 
@@ -76,7 +76,9 @@ This is a working document, not a report. Edit the red cells directly.
 When the value agrees with its pair, the red clears. When you are
 satisfied, export as CSV and import into Data Halo or Civil 3D.
 
-The red is driven by a live formula. Nothing needs to be rerun.
+The red is driven by a live formula. Nothing needs to be rerun. If your
+file had a station column, a hidden column named `_GAP` is present in the
+workbook. It drives the gap suppression. Do not delete it.
 
 ---
 
