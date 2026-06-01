@@ -1,4 +1,4 @@
-# Ahead-Back Diagonal Check
+# Ahead-Back Check
 
 *A conversation protocol for any capable AI agent*
 
