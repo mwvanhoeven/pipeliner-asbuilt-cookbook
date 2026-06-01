@@ -41,32 +41,25 @@ I have one station equation: back 52+14.83, ahead 52+00.00.
 
 ---
 
-## Sample prompts
+## What the agent is doing
 
-**LandXML — simplest case:**
-```
-Here is a LandXML alignment file. Generate a deflection report.
+The agent walks the alignment vertices pairwise. At each interior vertex
+(every vertex except the first and last) it:
 
-[attach XML]
-```
+1. Computes the incoming vector (previous vertex to this vertex) and
+   the outgoing vector (this vertex to the next vertex)
+2. Calculates the angle between the two vectors in decimal degrees
+3. Determines the sign by checking whether the next vertex falls to the
+   left or right of the incoming baseline — left is negative, right is
+   positive
+4. Converts to DMS
+5. Computes the raw along-line distance from the start, applies the
+   begin station offset and any equation adjustments, and formats as
+   plus notation
 
-**DXF with no equations:**
-```
-Here is my pipeline alignment DXF. Generate a deflection report.
-Begin station is 00+00.00.
-
-[attach DXF]
-```
-
-**DXF with equations:**
-```
-Here is my pipeline alignment DXF. Begin station is 10+00.00.
-Station equations: back 52+14.83 ahead 52+00.00,
-back 103+27.41 ahead 103+00.00.
-Generate a deflection report.
-
-[attach DXF]
-```
+Coordinates and distances are computed in the projected coordinate
+system. Latitude and longitude are derived by transforming each vertex
+back to WGS84. If no projection is declared, the agent will ask.
 
 ---
 
@@ -112,25 +105,32 @@ distance from the begin station.
 
 ---
 
-## What the agent is doing
+## Sample prompts
 
-The agent walks the alignment vertices pairwise. At each interior vertex
-(every vertex except the first and last) it:
+**LandXML — simplest case:**
+```
+Here is a LandXML alignment file. Generate a deflection report.
 
-1. Computes the incoming vector (previous vertex to this vertex) and
-   the outgoing vector (this vertex to the next vertex)
-2. Calculates the angle between the two vectors in decimal degrees
-3. Determines the sign by checking whether the next vertex falls to the
-   left or right of the incoming baseline — left is negative, right is
-   positive
-4. Converts to DMS
-5. Computes the raw along-line distance from the start, applies the
-   begin station offset and any equation adjustments, and formats as
-   plus notation
+[attach XML]
+```
 
-Coordinates and distances are computed in the projected coordinate
-system. Latitude and longitude are derived by transforming each vertex
-back to WGS84. If no projection is declared, the agent will ask.
+**DXF with no equations:**
+```
+Here is my pipeline alignment DXF. Generate a deflection report.
+Begin station is 00+00.00.
+
+[attach DXF]
+```
+
+**DXF with equations:**
+```
+Here is my pipeline alignment DXF. Begin station is 10+00.00.
+Station equations: back 52+14.83 ahead 52+00.00,
+back 103+27.41 ahead 103+00.00.
+Generate a deflection report.
+
+[attach DXF]
+```
 
 ---
 
