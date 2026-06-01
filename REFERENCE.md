@@ -60,6 +60,46 @@ gap detection.
 - If you tell the agent the file is already in station order, it will
   proceed without sorting; if order is uncertain, sort before attaching
 
+## Direction Words
+
+Weld records describe the pipe segment **ahead** of the weld by default.
+A bare attribute column — `heat`, `joint`, `wall` — records the material
+of the joint being laid in the ahead direction. This is not a convention
+of any particular software; it is what a weld point means in pipeline
+construction.
+
+Back columns record the material of the joint already in the ground behind
+the weld. They appear when the project requires a transcription check —
+confirming that what one weld recorded ahead matches what the next weld
+recorded back.
+
+**Recognized direction words:**
+
+| Direction | Recognized forms |
+|-----------|-----------------|
+| Ahead     | ahead, ah       |
+| Back      | back, bk        |
+
+Recognition is case-insensitive. The direction word may appear as a prefix
+or suffix, separated from the attribute name by any consistent separator
+— underscore, hyphen, space, period, or none. The separator convention is
+a property of the file, not of the recipe: if a file uses `heat_ahead` it
+will also use `heat_back`, not `heat-back`.
+
+**Pairing key:** everything that remains after stripping the direction word
+and its separator. Multi-word attributes are supported. `coating grade ah`
+and `coating grade bk` pair on `coating grade`. `pipe_wall_thickness_ahead`
+and `pipe_wall_thickness_back` pair on `pipe_wall_thickness`.
+
+**Bare columns:** a column with no direction word is treated as ahead. If
+`heat` and `heat_back` both appear, `heat` is the ahead column. If only
+`heat` appears with no back counterpart, it still describes the ahead
+material — it just has no pair to check against.
+
+**Unrecognized direction words:** if your file uses words other than those
+listed above (fwd, rev, in, out, dn, us, etc.), rename the columns before
+attaching the file.
+
 ## File Name
 
 FILE, FILES, FILENAME, FILE NAME, FILENAMES, FILE NAMES, FILE_NAME,
