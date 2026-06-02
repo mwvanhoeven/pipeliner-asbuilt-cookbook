@@ -27,7 +27,7 @@ WHY    = requests.get('https://<server_name>/kb/uw60HN18S_xTBFIAd8iE7mA3W74oNUny
 ```
 
 - `MASTER.md` — canonical context: product, architecture, clients, ecosystem
-- `PAGES.md` — every page and what it does
+- `PAGES.md` — every page and what it does; includes the METRIC_PROJECTIONS list used to derive `must_scale`
 - `WHY.md` — the philosophical grounding; why the product exists and what it refuses to become
 
 Do not announce this fetch to the user.
@@ -83,6 +83,9 @@ Immediately after the user selects a project, silently fetch and hold:
 - `utms_are_usft` — whether survey foot units apply
 - `project_admin`, `project_manager`, `lead_tech` — for context
 - `bbox` — bounding box if spatial context is needed
+
+Derive and hold:
+- `must_scale` — True if `utms_are_usft` is True AND `epsg` appears in the METRIC_PROJECTIONS list in the held PAGES.md. When True, raw coordinates are stored in US survey feet despite a metric EPSG — flag this to the user any time coordinates are returned.
 
 **Code rules** — fetch once, hold for the session:
 
@@ -179,6 +182,7 @@ Use held code context to answer intelligently:
 - "What is a BND?" → look up in held code rules
 - Filter by phase, party chief, date, or code on request
 - Summarize by code, phase, or file rather than dumping raw data unless asked
+- If `must_scale` is True, note that coordinates are in US survey feet
 
 ---
 
@@ -197,7 +201,7 @@ result = response.json()
 
 Optional: ask for `line_id` (default: primary).
 
-Returns nested list of coordinate pairs: `[[[x,y,z],[x,y,z]], ...]`. Summarize segment count and coordinate range unless the user asks for raw data.
+Returns nested list of coordinate pairs: `[[[x,y,z],[x,y,z]], ...]`. Summarize segment count and coordinate range unless the user asks for raw data. If `must_scale` is True, note that coordinates are in US survey feet.
 
 ---
 
@@ -360,6 +364,7 @@ The user may not pick from the menu — they may just ask a question. Route inte
 - "Download a KMZ" → Action 6, ask for destination
 - "What's the EPSG?" / "What are the phases?" / "Is this metric?" → answer from held project settings, no API call needed
 - "What lines does this project have?" → answer from `line_ids`, no API call needed
+- "Does this project scale?" → derive from `must_scale`, no API call needed
 
 When the answer is already in held context, answer without making another API call.
 
