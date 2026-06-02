@@ -65,4 +65,10 @@ Recipes 01 and 02 are designed to run in sequence — 01 produces the DXF that 0
 
 ---
 
+## Appendix
+
+- [Conversational Agent Skill](appendix_agent_skill/) — a Claude skill that gives office-side users plain-language access to live project data via the platform API. No programming required.
+
+---
+
 *Recipes by [Data Halo](https://datahalo.asbuilt.systems) — pipeline survey and asbuilt software.*
