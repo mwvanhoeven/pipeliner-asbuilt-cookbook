@@ -56,14 +56,7 @@ When asked for a server URL, enter:
 https://datahalo.asbuilt.systems
 ```
 
-When prompted for credentials, enter:
-
-```
-username: mwvanhoeven
-password: marshill
-```
-
-Pick **Majestic Asbuilt** from the project list. Then ask:
+Enter your platform credentials when prompted. Pick a project from the list. Then ask:
 
 ```
 Give me a progress report.
