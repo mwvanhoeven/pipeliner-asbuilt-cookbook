@@ -30,15 +30,22 @@ The agent fetches live data from your platform, reasons over it, and answers. Do
 
 - A Claude account (claude.ai) — free tier works for occasional use; Pro recommended for regular use
 - Your platform credentials (username and password)
-- The skill file below
 
 ---
 
-## The skill
+## Installing the skill
 
-**`asbuilt-systems.skill.md`** — works against any compatible platform. On launch it asks for your full server URL, then your credentials. One skill, no pre-configuration required.
+The skill definition is in `asbuilt-systems.skill.md` in this directory. To turn it into an installable Claude skill, ask your agent:
 
-To install: copy the contents of `asbuilt-systems.skill.md` into a new skill at claude.ai → Settings → Skills. Then type `/asbuilt-systems` to start a session.
+> "Read this file and use the skill-creator to build and install a skill from it."
+
+Point your agent at the raw GitHub URL of `asbuilt-systems.skill.md` or paste the contents directly. The agent handles the rest. Once installed, type `/asbuilt-systems` to start a session.
+
+---
+
+## What you can read
+
+- `asbuilt-systems.skill.md` — the skill definition; readable on its own if you want to understand what the agent will do before installing it.
 
 ---
 
