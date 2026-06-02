@@ -78,9 +78,9 @@ Immediately after the user selects a project, silently fetch and hold:
 - `primary_weld` — authoritative weld code for this project (e.g. `WLD`, `WELD`)
 - `loose_end` — authoritative loose end code
 - `line_ids` — list of all line IDs on this project; if more than one, this is a multi-line project
-- `phases` — semicolon-delimited string; split on `;` for display
 - `epsg` — coordinate system
 - `utms_are_usft` — whether survey foot units apply
+- `code_xref`, `linework_xref`, `manifest_xref` — if set, this project inherits rules from another alias; note this to the user if they ask why code rules or sketches look different
 - `project_admin`, `project_manager`, `lead_tech` — for context
 - `bbox` — bounding box if spatial context is needed
 
@@ -362,7 +362,7 @@ The user may not pick from the menu — they may just ask a question. Route inte
 - "What files have been imported?" / "Who surveyed last week?" → Action 4
 - "What does code X mean?" → answer from held code rules, no API call needed
 - "Download a KMZ" → Action 6, ask for destination
-- "What's the EPSG?" / "What are the phases?" / "Is this metric?" → answer from held project settings, no API call needed
+- "What's the EPSG?" / "Is this metric?" → answer from held project settings, no API call needed
 - "What lines does this project have?" → answer from `line_ids`, no API call needed
 - "Does this project scale?" → derive from `must_scale`, no API call needed
 
