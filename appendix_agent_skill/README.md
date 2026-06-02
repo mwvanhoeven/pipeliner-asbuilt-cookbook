@@ -36,30 +36,27 @@ The agent fetches live data from your platform, reasons over it, and answers. Do
 
 ## The skill
 
-Two versions are provided.
+**`asbuilt-systems.skill.md`** — works against any compatible platform. On launch it asks for your full server URL, then your credentials. One skill, no pre-configuration required.
 
-**`datahalo-asbuilt-systems.skill`** — pre-configured for `datahalo.asbuilt.systems`. The demo credentials (`mwvanhoeven` / `marshill`, project `demo2`) are live — you can install this and try it against the Majestic Asbuilt demo project without any account.
-
-**`asbuilt-systems.skill`** — generic. Works against any compatible platform. On launch it asks for your full server URL, then your credentials.
-
-To install: download the `.skill` file, go to claude.ai → Settings → Skills, and import it. Then type the skill's trigger command to start a session.
-
-| Skill | Trigger |
-|---|---|
-| `datahalo-asbuilt-systems.skill` | `/datahalo-asbuilt-systems` |
-| `asbuilt-systems.skill` | `/asbuilt-systems` |
+To install: copy the contents of `asbuilt-systems.skill.md` into a new skill at claude.ai → Settings → Skills. Then type `/asbuilt-systems` to start a session.
 
 ---
 
 ## Demo walkthrough
 
-Install `datahalo-asbuilt-systems.skill`. Type:
+Type:
 
 ```
-/datahalo-asbuilt-systems
+/asbuilt-systems
 ```
 
-When prompted, enter:
+When asked for a server URL, enter:
+
+```
+https://datahalo.asbuilt.systems
+```
+
+When prompted for credentials, enter:
 
 ```
 username: mwvanhoeven
