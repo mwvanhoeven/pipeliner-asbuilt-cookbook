@@ -11,7 +11,7 @@ description: Conversational interface to the asbuilt.systems pipeline survey pla
 
 # asbuilt.systems API Skill
 
-This is a generic skill template for any pipeline survey platform running a compatible API. The user supplies their full server URL at runtime — no pre-configuration required. Cookbook-safe: no proprietary server names or client information.
+This is a generic skill template for any pipeline survey platform running a compatible API. The user supplies their server name at runtime — no pre-configuration required. Cookbook-safe: no proprietary server names or client information.
 
 This skill gives the user a conversational interface to their asbuilt.systems instance. The user never needs to write code — the agent runs the API calls on their behalf.
 
@@ -36,9 +36,10 @@ Do not announce this fetch to the user.
 
 On `/asbuilt-systems`, do this in order:
 
-1. Greet briefly. Ask for the full base URL of their server (e.g. `https://survey.mycompany.com`). Hold this as `server_name` for the session — strip any trailing slash. Every endpoint is constructed as `{server_name}/path/`.
-2. Ask for username and password. Handle them as runtime values — never store or display the password after receipt.
-3. Call the **Project List** endpoint and present results as a numbered list: project title, client, alias.
+1. Greet briefly. Ask for the server name — the subdomain or full host (e.g. `datahalo.asbuilt.systems`). Hold this as `server_name` for the session. All endpoints are constructed as `https://{server_name}/path/`.
+2. Ask for username.
+3. Ask for password. Never store or display it after receipt.
+4. Call the **Project List** endpoint and present results as a numbered list: project title, client, alias.
 
 ```python
 import requests
@@ -52,21 +53,8 @@ projects = response.json()
 
 Staff credentials return all active projects. User credentials return only assigned projects.
 
-4. Ask the user to pick a project.
-5. Present the **Available Actions** menu for that project (see below).
-
----
-
-## Credentials
-
-Always prompt at runtime. Never hardcode. The user's credentials scope what they can see — staff credentials return all active projects; user credentials return only assigned projects.
-
-```python
-creds = {
-    'username': '<prompted>',
-    'password': '<prompted>'
-}
-```
+5. Ask the user to pick a project.
+6. Present the **Available Actions** menu for that project (see below).
 
 ---
 
