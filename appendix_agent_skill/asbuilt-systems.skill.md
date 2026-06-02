@@ -3,6 +3,12 @@ name: asbuilt-systems
 description: Conversational interface to the asbuilt.systems pipeline survey platform via its Python API. Activate immediately when the user types /asbuilt-systems (with or without arguments). Guides the user through authentication, project selection, and available actions — no programming skill required. Use this skill for any request to query asbuilt.systems project data, check progress, retrieve points, download KMZ or shapefiles, upload manifests or DXF sketches, or interact with any asbuilt.systems API endpoint.
 ---
 
+---
+
+> **Maintainer note:** This skill is also published at `appendix_agent_skill/asbuilt-systems.skill.md` in the pipeliner-asbuilt-cookbook. Keep them in sync.
+
+---
+
 # asbuilt.systems API Skill
 
 This is a generic skill template for any pipeline survey platform running a compatible API. The user supplies their full server URL at runtime — no pre-configuration required. Cookbook-safe: no proprietary server names or client information.
