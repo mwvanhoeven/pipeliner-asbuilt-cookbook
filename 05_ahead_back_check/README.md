@@ -80,6 +80,11 @@ The red is driven by a live formula. Nothing needs to be rerun. If your
 file had a station column, a hidden column named `_GAP` is present in the
 workbook. It drives the gap suppression. Do not delete it.
 
+Construction unfolds daily. If new welds come in after you've run the
+check, bring the new rows back to this chat as a CSV and ask the agent
+to merge and rerun on the combined data. The output replaces the previous
+workbook — sorted, regapped, reformatted from scratch.
+
 ---
 
 ## Troubleshooting
