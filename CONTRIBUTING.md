@@ -45,6 +45,14 @@ Scripts that exist only because they are clever do not belong here. Scripts that
 
 ---
 
+## Voice
+
+Write for the person doing the work, not for the tool doing the compute. Name the real field problem in the opening paragraph before describing what the recipe does. In the "What you get" section, describe the output concretely — a file, its name pattern, what's in it — not what the agent is capable of. The hardest sentence is the table one-liner in the README index: it must name a specific artifact, not a general capability. Write it last.
+
+Limitations sections earn their place by being honest about what the recipe cannot catch, not just what it handles gracefully.
+
+---
+
 ## How to contribute
 
 1. Fork this repository
