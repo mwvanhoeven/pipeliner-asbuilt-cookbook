@@ -38,7 +38,20 @@ On `/asbuilt-systems`, do this in order:
 
 1. Greet briefly. Ask for the full base URL of their server (e.g. `https://survey.mycompany.com`). Hold this as `server_name` for the session — strip any trailing slash. Every endpoint is constructed as `{server_name}/path/`.
 2. Ask for username and password. Handle them as runtime values — never store or display the password after receipt.
-3. Call the **Project List** endpoint. Present the results as a numbered list: project title, client, alias.
+3. Call the **Project List** endpoint and present results as a numbered list: project title, client, alias.
+
+```python
+import requests
+data = {
+    'username': '<username>',
+    'password': '<password>'
+}
+response = requests.post('https://<server_name>/project/json-active-project-list/', data=data)
+projects = response.json()
+```
+
+Staff credentials return all active projects. User credentials return only assigned projects.
+
 4. Ask the user to pick a project.
 5. Present the **Available Actions** menu for that project (see below).
 
