@@ -42,36 +42,4 @@ To install: copy the contents of `asbuilt-systems.skill.md` into a new skill at 
 
 ---
 
-## Demo walkthrough
-
-Type:
-
-```
-/asbuilt-systems
-```
-
-When asked for a server URL, enter:
-
-```
-https://datahalo.asbuilt.systems
-```
-
-Enter your platform credentials when prompted. Pick a project from the list. Then ask:
-
-```
-Give me a progress report.
-```
-
-The agent fetches live data and returns phase coverage, baseline length, and percentage complete. From there, ask anything — point counts, file lists, code definitions.
-
----
-
-## A note on the API examples in your platform
-
-Every export, report, and import page in your platform includes a Python code block showing exactly how to call that page's endpoint. These examples are live — they use your actual project data, with only the password substituted. Any capable agent with code execution can run them directly.
-
-This skill is the organized version of that capability: all the endpoints in one place, with a guided conversation to help you get answers without knowing which endpoint to call.
-
----
-
 *Appendix by [Data Halo](https://datahalo.asbuilt.systems) — pipeline survey and asbuilt software.*
