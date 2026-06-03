@@ -1,6 +1,6 @@
 # Leaflet Points Map Template
 
-When you retrieve point data with `lat_long: True`, the response includes geographic coordinates for each point. This template renders them in an interactive Leaflet map as a Claude artifact.
+The `json-points/` response includes `latitude` and `longitude` on every point dict. This template renders them in an interactive Leaflet map as a Claude artifact.
 
 ---
 
@@ -12,21 +12,18 @@ Use it when you want a quick visual check of where points actually fell — alig
 
 ## The API call
 
-Add `lat_long: True` to your `json-points/` request:
-
 ```python
 import requests
 data = {
     'username': '<username>',
     'password': '<password>',
-    'project_alias': '<alias>',
-    'lat_long': True
+    'project_alias': '<alias>'
 }
 response = requests.post('https://<server_name>/points/json-points/', data=data)
 points = response.json()
 ```
 
-Each point dict in the response will include latitude/longitude fields alongside the standard fields. The field names are `lat` and `lng`.
+Each point dict includes `latitude` and `longitude` alongside the standard fields.
 
 ---
 
@@ -82,12 +79,12 @@ function markerFor(code) {
 
 function renderMap(points) {
   if (!points.length) {
-    document.getElementById('status').textContent = 'No points with lat/lng data.';
+    document.getElementById('status').textContent = 'No points with coordinates.';
     return;
   }
 
-  const lats = points.map(p => p.lat);
-  const lngs = points.map(p => p.lng);
+  const lats = points.map(p => p.latitude);
+  const lngs = points.map(p => p.longitude);
   const center = [
     (Math.min(...lats) + Math.max(...lats)) / 2,
     (Math.min(...lngs) + Math.max(...lngs)) / 2,
@@ -101,7 +98,7 @@ function renderMap(points) {
   }).addTo(map);
 
   points.forEach(p => {
-    L.marker([p.lat, p.lng], { icon: markerFor(p.code) })
+    L.marker([p.latitude, p.longitude], { icon: markerFor(p.code) })
       .bindPopup(`
         <strong>${p.point_id}</strong><br>
         Code: ${p.code}<br>
@@ -111,7 +108,7 @@ function renderMap(points) {
       .addTo(map);
   });
 
-  const bounds = L.latLngBounds(points.map(p => [p.lat, p.lng]));
+  const bounds = L.latLngBounds(points.map(p => [p.latitude, p.longitude]));
   map.fitBounds(bounds, { padding: [32, 32] });
 
   const codeCounts = {};
@@ -120,7 +117,7 @@ function renderMap(points) {
   document.getElementById('status').textContent = `${points.length} points — ${summary}`;
 }
 
-renderMap(POINTS.filter(p => p.lat != null && p.lng != null));
+renderMap(POINTS.filter(p => p.latitude != null && p.longitude != null));
 </script>
 ```
 
