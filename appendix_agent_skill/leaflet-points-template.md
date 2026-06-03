@@ -45,13 +45,15 @@ This is the complete artifact template. Your agent can use it directly or adapt 
 
 `CODE_COLORS` should be populated from the project's actual on-line codes. The agent can do this automatically from the held code rules (see prompt below). The defaults shown cover common on-line codes — any code not in the map renders gray.
 
+**Note on rendering:** The map tile background does not render inside the Claude chat artifact sandbox, but is visible when the artifact is downloaded as an HTML file. This is expected behavior — the map controls, markers, and popups all work normally in both contexts.
+
 ```html
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <div style="padding: 1rem 0 0.5rem;">
-  <div id="map" style="height: 420px; border-radius: 12px; border: 0.5px solid #ccc; overflow: hidden;"></div>
-  <p id="legend" style="font-size: 12px; margin: 8px 0 0;"></p>
+  <div id="map" style="height: 420px; border-radius: 12px; border: 0.5px solid var(--color-border-tertiary, #ccc); overflow: hidden;"></div>
+  <p id="legend" style="font-size: 12px; margin: 8px 0 0; color: var(--color-text-secondary, #666);"></p>
 </div>
 
 <script>
@@ -120,7 +122,7 @@ function renderMap(points) {
   const legend = Object.entries(CODE_COLORS)
     .filter(([c]) => codeCounts[c])
     .map(([c, col]) =>
-      `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:10px;color:#666">` +
+      `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:10px;">` +
       `<span style="width:8px;height:8px;border-radius:50%;background:${col};display:inline-block;"></span>${c}: ${codeCounts[c]}</span>`
     ).join('');
   document.getElementById('legend').innerHTML = legend;
