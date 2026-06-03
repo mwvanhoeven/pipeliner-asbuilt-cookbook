@@ -31,11 +31,11 @@ Each point dict includes `latitude` and `longitude` alongside the standard field
 
 Once you have the point data in hand, paste this prompt to your agent:
 
-> "Using the points data already retrieved, build a Leaflet map artifact. Color the markers by code. Show a popup on click with point_id, code, station, and phase. Auto-fit the bounds."
+> "Using the points data already retrieved, build a Leaflet map artifact. Color the markers by code. Show a popup on click with point_id, code, station, and phase. Auto-fit the bounds. Show a color legend below the map."
 
-If you want to filter first — for example, only weld points — say so before asking for the map:
+If you want to filter first — for example, only on-line points — say so before asking for the map:
 
-> "Filter to WLD points only, then build the Leaflet map."
+> "Filter to on-line codes only, then build the Leaflet map."
 
 ---
 
@@ -43,23 +43,28 @@ If you want to filter first — for example, only weld points — say so before 
 
 This is the complete artifact template. Your agent can use it directly or adapt it. The `POINTS` constant is a placeholder — replace it with the actual API response.
 
+`CODE_COLORS` should be populated from the project's actual on-line codes. The agent can do this automatically from the held code rules (see prompt below). The defaults shown cover common on-line codes — any code not in the map renders gray.
+
 ```html
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <div style="padding: 1rem 0 0.5rem;">
   <div id="map" style="height: 420px; border-radius: 12px; border: 0.5px solid #ccc; overflow: hidden;"></div>
-  <p id="status" style="font-size: 13px; color: #888; margin: 8px 0 0; text-align: right;"></p>
+  <p id="legend" style="font-size: 12px; margin: 8px 0 0;"></p>
 </div>
 
 <script>
 const POINTS = []; /* replace with API response */
 
 const CODE_COLORS = {
+  'WELD': '#185FA5',
   'WLD':  '#185FA5',
   'BND':  '#3B6D11',
-  'CAS':  '#BA7517',
-  'TIE':  '#A32D2D',
+  'LE':   '#A32D2D',
+  'FLN':  '#BA7517',
+  'TEE':  '#533AB9',
+  'VLV':  '#0F6E56',
 };
 const DEFAULT_COLOR = '#5F5E5A';
 
@@ -71,15 +76,15 @@ function markerFor(code) {
   const color = colorFor(code);
   return L.divIcon({
     className: '',
-    html: `<div style="width:10px;height:10px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>`,
-    iconSize: [10, 10],
-    iconAnchor: [5, 5],
+    html: `<div style="width:9px;height:9px;border-radius:50%;background:${color};border:2px solid white;box-shadow:0 1px 3px rgba(0,0,0,0.3);"></div>`,
+    iconSize: [9, 9],
+    iconAnchor: [4, 4],
   });
 }
 
 function renderMap(points) {
   if (!points.length) {
-    document.getElementById('status').textContent = 'No points with coordinates.';
+    document.getElementById('legend').textContent = 'No points with coordinates.';
     return;
   }
 
@@ -108,13 +113,17 @@ function renderMap(points) {
       .addTo(map);
   });
 
-  const bounds = L.latLngBounds(points.map(p => [p.latitude, p.longitude]));
-  map.fitBounds(bounds, { padding: [32, 32] });
+  map.fitBounds(L.latLngBounds(points.map(p => [p.latitude, p.longitude])), { padding: [32, 32] });
 
   const codeCounts = {};
   points.forEach(p => { codeCounts[p.code] = (codeCounts[p.code] || 0) + 1; });
-  const summary = Object.entries(codeCounts).map(([c, n]) => `${c}: ${n}`).join(' · ');
-  document.getElementById('status').textContent = `${points.length} points — ${summary}`;
+  const legend = Object.entries(CODE_COLORS)
+    .filter(([c]) => codeCounts[c])
+    .map(([c, col]) =>
+      `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:10px;color:#666">` +
+      `<span style="width:8px;height:8px;border-radius:50%;background:${col};display:inline-block;"></span>${c}: ${codeCounts[c]}</span>`
+    ).join('');
+  document.getElementById('legend').innerHTML = legend;
 }
 
 renderMap(POINTS.filter(p => p.latitude != null && p.longitude != null));
@@ -125,7 +134,7 @@ renderMap(POINTS.filter(p => p.latitude != null && p.longitude != null));
 
 ## Customizing the color map
 
-The `CODE_COLORS` object maps code strings to hex colors. Edit it to match your project's codes. Points with codes not in the map render in gray. Your agent can auto-populate this from the held code rules:
+`CODE_COLORS` maps code strings to hex colors. Edit it to match your project's on-line codes. The agent can auto-populate it from the held code rules:
 
 > "Build the Leaflet map and generate a CODE_COLORS entry for every on-line code in this project."
 
@@ -134,5 +143,5 @@ The `CODE_COLORS` object maps code strings to hex colors. Edit it to match your 
 ## Limitations
 
 - This is a visual check, not a GIS export. For spatial analysis, use the KMZ or shapefile downloads.
-- Large projects (thousands of points) will render slowly in a browser artifact. Filter to a phase or a code subset if performance is an issue.
+- Large projects (thousands of points) will render slowly in a browser artifact. Filter to on-line codes or a single phase if performance is an issue.
 - The map uses OpenStreetMap tiles. It requires an internet connection in the artifact's execution environment.
