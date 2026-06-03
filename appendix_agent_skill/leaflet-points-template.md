@@ -1,12 +1,14 @@
 # Leaflet Points Map Template
 
-The `json-points/` response includes `latitude` and `longitude` on every point dict. This template renders them in an interactive Leaflet map as a Claude artifact.
+The `json-points/` response includes `latitude` and `longitude` on every point dict. This template builds an interactive Leaflet map as a downloadable HTML file.
 
 ---
 
-## When to use this
+## How this works
 
-Use it when you want a quick visual check of where points actually fell — alignment coverage, phase distribution, or just a sanity check before exporting. It is not a GIS tool. It is a map.
+The agent fetches your point data, inlines it into a standalone HTML file, and offers it as a download. You open the file in any browser — no server, no login, no connection to your platform required beyond the initial fetch.
+
+**The map does not render as a chat artifact.** The Claude chat sandbox blocks external CDN scripts, so Leaflet cannot load inline. The download is the deliverable.
 
 ---
 
@@ -29,23 +31,19 @@ Each point dict includes `latitude` and `longitude` alongside the standard field
 
 ## What to tell your agent
 
-Once you have the point data in hand, paste this prompt to your agent:
+```
+Using the points already retrieved, build a Leaflet map as a downloadable HTML file.
+Filter to on-line codes only. Color markers by code. Popup on click: point_id, code,
+station, phase. Auto-fit bounds. Color legend at the bottom. Full dataset — no sampling.
+```
 
-> "Using the points data already retrieved, build a Leaflet map artifact. Color the markers by code. Show a popup on click with point_id, code, station, and phase. Auto-fit the bounds. Show a color legend below the map."
-
-If you want to filter first — for example, only on-line points — say so before asking for the map:
-
-> "Filter to on-line codes only, then build the Leaflet map."
+The agent will produce a file ready to open in a browser. A project with 1,500+ on-line points generates and downloads in seconds; browser load time is fast.
 
 ---
 
 ## The template
 
-This is the complete artifact template. Your agent can use it directly or adapt it. The `POINTS` constant is a placeholder — replace it with the actual API response.
-
-`CODE_COLORS` should be populated from the project's actual on-line codes. The agent can do this automatically from the held code rules (see prompt below). The defaults shown cover common on-line codes — any code not in the map renders gray.
-
-**Note on rendering:** The map tile background does not render inside the Claude chat artifact sandbox, but is visible when the artifact is downloaded as an HTML file. This is expected behavior — the map controls, markers, and popups all work normally in both contexts.
+The agent uses this as its starting point. `POINTS` is replaced with the actual filtered API response. `CODE_COLORS` should be populated from the project's on-line codes — the agent can derive these from the held code rules.
 
 ```html
 <!DOCTYPE html>
@@ -53,6 +51,7 @@ This is the complete artifact template. Your agent can use it directly or adapt 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><!-- project title --></title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
@@ -66,7 +65,7 @@ This is the complete artifact template. Your agent can use it directly or adapt 
   <div id="legend"></div>
 
 <script>
-const POINTS = []; /* replace with API response */
+const POINTS = []; /* replaced with filtered API response */
 
 const CODE_COLORS = {
   'WELD': '#185FA5',
@@ -79,9 +78,7 @@ const CODE_COLORS = {
 };
 const DEFAULT_COLOR = '#5F5E5A';
 
-function colorFor(code) {
-  return CODE_COLORS[code] || DEFAULT_COLOR;
-}
+function colorFor(code) { return CODE_COLORS[code] || DEFAULT_COLOR; }
 
 function markerFor(code) {
   const color = colorFor(code);
@@ -94,13 +91,9 @@ function markerFor(code) {
 }
 
 function renderMap(points) {
-  if (!points.length) {
-    document.getElementById('legend').textContent = 'No points with coordinates.';
-    return;
-  }
+  if (!points.length) { document.getElementById('legend').textContent = 'No points.'; return; }
 
   const map = L.map('map');
-
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors',
     maxZoom: 19,
@@ -108,12 +101,7 @@ function renderMap(points) {
 
   points.forEach(p => {
     L.marker([p.latitude, p.longitude], { icon: markerFor(p.code) })
-      .bindPopup(`
-        <strong>${p.point_id}</strong><br>
-        Code: ${p.code}<br>
-        Station: ${p.raw_station || '—'}<br>
-        Phase: ${p.phase || '—'}
-      `)
+      .bindPopup(`<strong>${p.point_id}</strong><br>Code: ${p.code}<br>Station: ${p.raw_station || '—'}<br>Phase: ${p.phase || '—'}`)
       .addTo(map);
   });
 
@@ -122,14 +110,12 @@ function renderMap(points) {
   const codeCounts = {};
   points.forEach(p => { codeCounts[p.code] = (codeCounts[p.code] || 0) + 1; });
   const legend = document.getElementById('legend');
-  Object.entries(CODE_COLORS)
-    .filter(([c]) => codeCounts[c])
-    .forEach(([c, col]) => {
-      const span = document.createElement('span');
-      span.style.cssText = 'display:inline-flex;align-items:center;gap:4px;';
-      span.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${col};display:inline-block;"></span>${c}: ${codeCounts[c]}`;
-      legend.appendChild(span);
-    });
+  Object.entries(CODE_COLORS).filter(([c]) => codeCounts[c]).forEach(([c, col]) => {
+    const span = document.createElement('span');
+    span.style.cssText = 'display:inline-flex;align-items:center;gap:4px;';
+    span.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${col};display:inline-block;"></span>${c}: ${codeCounts[c]}`;
+    legend.appendChild(span);
+  });
 }
 
 renderMap(POINTS.filter(p => p.latitude != null && p.longitude != null));
@@ -142,14 +128,16 @@ renderMap(POINTS.filter(p => p.latitude != null && p.longitude != null));
 
 ## Customizing the color map
 
-`CODE_COLORS` maps code strings to hex colors. Edit it to match your project's on-line codes. The agent can auto-populate it from the held code rules:
+`CODE_COLORS` maps code strings to hex colors. The agent can auto-populate it from the held code rules:
 
 > "Build the Leaflet map and generate a CODE_COLORS entry for every on-line code in this project."
+
+Any code not in the map renders gray.
 
 ---
 
 ## Limitations
 
 - This is a visual check, not a GIS export. For spatial analysis, use the KMZ or shapefile downloads.
-- Large projects (thousands of points) will render slowly in a browser artifact. Filter to on-line codes or a single phase if performance is an issue.
-- The map uses OpenStreetMap tiles. It requires an internet connection in the artifact's execution environment.
+- Requires an internet connection when opened in a browser (for OpenStreetMap tiles).
+- The file is self-contained otherwise — the point data is inlined, no platform connection needed after download.
