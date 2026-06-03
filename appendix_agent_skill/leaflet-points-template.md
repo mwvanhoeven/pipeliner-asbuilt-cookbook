@@ -48,13 +48,22 @@ This is the complete artifact template. Your agent can use it directly or adapt 
 **Note on rendering:** The map tile background does not render inside the Claude chat artifact sandbox, but is visible when the artifact is downloaded as an HTML file. This is expected behavior — the map controls, markers, and popups all work normally in both contexts.
 
 ```html
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-<div style="padding: 1rem 0 0.5rem;">
-  <div id="map" style="height: 420px; border-radius: 12px; border: 0.5px solid var(--color-border-tertiary, #ccc); overflow: hidden;"></div>
-  <p id="legend" style="font-size: 12px; margin: 8px 0 0; color: var(--color-text-secondary, #666);"></p>
-</div>
+<!DOCTYPE html>
+<html style="height:100%;margin:0;">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    html, body { height: 100%; margin: 0; padding: 0; font-family: sans-serif; }
+    #map { position: absolute; top: 0; left: 0; right: 0; bottom: 28px; }
+    #legend { position: absolute; bottom: 0; left: 0; right: 0; height: 24px; padding: 4px 8px; font-size: 12px; color: #666; display: flex; align-items: center; gap: 12px; background: #fff; border-top: 0.5px solid #ddd; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="legend"></div>
 
 <script>
 const POINTS = []; /* replace with API response */
@@ -90,14 +99,7 @@ function renderMap(points) {
     return;
   }
 
-  const lats = points.map(p => p.latitude);
-  const lngs = points.map(p => p.longitude);
-  const center = [
-    (Math.min(...lats) + Math.max(...lats)) / 2,
-    (Math.min(...lngs) + Math.max(...lngs)) / 2,
-  ];
-
-  const map = L.map('map').setView(center, 14);
+  const map = L.map('map');
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors',
@@ -119,17 +121,21 @@ function renderMap(points) {
 
   const codeCounts = {};
   points.forEach(p => { codeCounts[p.code] = (codeCounts[p.code] || 0) + 1; });
-  const legend = Object.entries(CODE_COLORS)
+  const legend = document.getElementById('legend');
+  Object.entries(CODE_COLORS)
     .filter(([c]) => codeCounts[c])
-    .map(([c, col]) =>
-      `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:10px;">` +
-      `<span style="width:8px;height:8px;border-radius:50%;background:${col};display:inline-block;"></span>${c}: ${codeCounts[c]}</span>`
-    ).join('');
-  document.getElementById('legend').innerHTML = legend;
+    .forEach(([c, col]) => {
+      const span = document.createElement('span');
+      span.style.cssText = 'display:inline-flex;align-items:center;gap:4px;';
+      span.innerHTML = `<span style="width:8px;height:8px;border-radius:50%;background:${col};display:inline-block;"></span>${c}: ${codeCounts[c]}`;
+      legend.appendChild(span);
+    });
 }
 
 renderMap(POINTS.filter(p => p.latitude != null && p.longitude != null));
 </script>
+</body>
+</html>
 ```
 
 ---
