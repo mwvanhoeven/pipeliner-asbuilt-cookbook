@@ -208,6 +208,8 @@ result = response.json()
 
 Returns list of dicts: `filename`, `partychief`, `surveydate` (yyyy-mm-dd), `phase`, `username`. Present as a table or summary. Can filter by date, party chief, or phase on request.
 
+> **Note:** The file list is a census — one record per unique filename across all points. It is not a log of import events and carries no upload timestamp. Think of it as a point group index, not a history.
+
 ---
 
 ### 5. Code Rules
@@ -278,6 +280,12 @@ with open(destination_path + fname, 'wb') as f:
 ### 8. Shapefile — Joints
 
 Ask for destination path. Optional: `line_id` (default: primary).
+
+> **Note on `line_id`:** On multi-line projects, the endpoint defaults to `primary`. If `primary` has no coverage, the response will be an error file rather than a shapefile. Always prompt for `line_id` on multi-line projects.
+
+**Key field: `LENGTH_3D`**
+
+The DBF includes a `LENGTH_3D` column — the 3D surveyed length of each joint (weld-to-weld span). This is computed from the on-line geometry between welds, including any intervening on-line events such as bends. It is not a straight-line distance and is not derived from station math. Summing `LENGTH_3D` grouped by attributes such as `OD`, `GRADE`, or `CI_WALL` produces a material takeoff directly from the asbuilt. This is the primary use case for the joints shapefile.
 
 ```python
 import requests, re
