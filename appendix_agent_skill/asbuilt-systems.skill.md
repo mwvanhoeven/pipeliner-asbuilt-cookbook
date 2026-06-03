@@ -162,7 +162,7 @@ response = requests.post('https://<server_name>/points/json-points/', data=data)
 result = response.json()
 ```
 
-Returns a list of point dicts with keys: `point_id`, `line_id`, `raw_station`, `equation_station`, `x`, `y`, `z`, `filename`, `phase`, `surveydate`, `partychief`, `code`, `attributes` (nested: `name`, `type`, `value`).
+Returns a list of point dicts with keys: `point_id`, `line_id`, `raw_station`, `equation_station`, `x`, `y`, `z`, `latitude`, `longitude`, `filename`, `phase`, `surveydate`, `partychief`, `code`, `attributes` (nested: `name`, `type`, `value`).
 
 Use held code context to answer intelligently:
 - "How many weld points?" → count points where `code == primary_weld` (from project object)
