@@ -53,6 +53,7 @@ The cookbook gets better every time an agent reports back. Yours can be part of 
 | 08 | [CSV Pre-Import Cleanup](08_csv_cleanup/) | A cleaned CSV with a plain-English report of everything Excel was hiding |
 | 09 | [Wrong-Way Elbow Detector](09_wrong_way_elbow/) | A marked DXF with flagged vertices where the pipeline bends against its own trend |
 | 10 | [Alignment Deflection Report](10_deflection_report/) | An Excel workbook of deflection angles at each alignment vertex, ready to hand to the field crew |
+| 11 | [Coordinate Conversion](11_coordinate_conversion/) | A reprojected coordinate file — original columns preserved, target zone name appended to the filename |
 
 Recipes 01 and 02 are designed to run in sequence — 01 produces the DXF that 02 consumes.
 
