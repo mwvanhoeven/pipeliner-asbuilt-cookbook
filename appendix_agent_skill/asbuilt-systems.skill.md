@@ -404,7 +404,7 @@ Auth: staff OR Assignment membership on the project. A sandboxed Contributor pul
 - `busts` — flat list of busted welds that belong to a stretch of two or more consecutive mismatches. Each weld's `attributes` list contains every tracked attribute; `busted: true` marks which one(s) disagreed.
 - `stretch` — adjacency group number (1-based, per line). Welds sharing the same `line_id` and `stretch` value are consecutive busts — present them together.
 - `pairs` — the attribute pairs that were checked (e.g. `[{"ahead": "HEAT_AHEAD", "back": "HEAT_BACK"}]`). Useful for explaining to the user what the check covers.
-- `ignored_values` — values treated as blank and excluded from comparison (e.g. `"N/A"`, `""`).
+- `ignored_values` — strings excluded from comparison by exact match or prefix. A value is skipped if it equals an entry in this list, or if it begins with one (e.g. `"FAB"` suppresses `"FAB-001"`, `"FAB-123"`, and any other value starting with `"FAB"`). If a weld isn't flagged and the user expects it to be, check whether its value matches an ignored prefix.
 
 **Presenting results:**
 
