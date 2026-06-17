@@ -120,6 +120,9 @@ Download
 Write
   9. Upload manifest (CSV or XLSX)
  10. Upload DXF sketch
+
+QC
+ 11. Ahead-back joint continuity
 ```
 
 Wait for the user's choice, then execute the corresponding action below.
@@ -349,6 +352,70 @@ Report success or surface `r.text` on failure.
 
 ---
 
+### 11. Ahead-Back Joint Continuity
+
+*Checks whether weld attributes agree across joints — every weld's "ahead" value must match the next weld's "back" value on the same line. Mismatches are busts.*
+
+```python
+import requests
+data = {
+    'username': '<username>',
+    'password': '<password>',
+    'project_alias': '<alias>'
+}
+response = requests.post('https://<server_name>/ahead-back/json/', data=data)
+result = response.json()
+```
+
+Auth: staff OR Assignment membership on the project. A sandboxed Contributor pull returns only their own welds.
+
+**Response shape:**
+
+```
+{
+  "summary": {
+    "project_alias": str,
+    "primary_weld": str,
+    "is_clean": bool,
+    "has_primary_weld": bool,
+    "has_welds": bool,
+    "bustcount": int,        # project-wide badge; single-weld isolated busts count here
+    "pairs": [{"ahead": str, "back": str}, ...],
+    "ignored_values": [str, ...]
+  },
+  "busts": [
+    {
+      "line_id": str,
+      "stretch": int,        # 1-based adjacency group on the line
+      "station": str,
+      "point_id": int,
+      "owner": str,
+      "attributes": [{"name": str, "value": str, "busted": bool}]
+    },
+    ...
+  ]
+}
+```
+
+**Interpreting the response:**
+
+- `is_clean` — True if `bustcount` is zero. Lead with this.
+- `bustcount` — project-wide count. Single-weld isolated busts (a weld with no valid neighbor) count toward this total but are **not** listed in `busts` — they cannot form a stretch.
+- `busts` — flat list of busted welds that belong to a stretch of two or more consecutive mismatches. Each weld's `attributes` list contains every tracked attribute; `busted: true` marks which one(s) disagreed.
+- `stretch` — adjacency group number (1-based, per line). Welds sharing the same `line_id` and `stretch` value are consecutive busts — present them together.
+- `pairs` — the attribute pairs that were checked (e.g. `[{"ahead": "HEAT_AHEAD", "back": "HEAT_BACK"}]`). Useful for explaining to the user what the check covers.
+- `ignored_values` — values treated as blank and excluded from comparison (e.g. `"N/A"`, `""`).
+
+**Presenting results:**
+
+If `is_clean` is True: confirm the project is clean and state the weld count from the badge.
+
+If busts exist, group by `line_id`, then by `stretch`. For each stretch, list the busted welds in order with their station and which attributes are flagged. Explain that consecutive busts form a stretch because each weld is both the "back" of the prior and the "ahead" of the next — a single bad entry can flag two welds at once.
+
+> **Note:** The recipe in `05_ahead_back_check/` walks the same check from a CSV export using a spreadsheet-based workflow. This endpoint pulls the live platform assessment directly — same logic, no export required.
+
+---
+
 ## Natural Language Routing
 
 The user may not pick from the menu — they may just ask a question. Route intelligently:
@@ -361,6 +428,8 @@ The user may not pick from the menu — they may just ask a question. Route inte
 - "What's the EPSG?" / "Is this metric?" → answer from held project settings, no API call needed
 - "What lines does this project have?" → answer from `line_ids`, no API call needed
 - "Does this project scale?" → derive from `must_scale`, no API call needed
+- "Are there any ahead-back busts?" / "Is the ahead-back clean?" / "Check joint continuity" → Action 11
+- "How many ahead-back busts?" / "Show me the ahead-back issues" → Action 11, surface `bustcount` and `busts`
 
 When the answer is already in held context, answer without making another API call.
 
