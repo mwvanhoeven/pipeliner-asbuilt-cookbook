@@ -129,9 +129,12 @@ QC
  15. Dupe Atts (non-unique attribute values)
  16. Begin-End (alternating marker continuity)
  17. Validation (attributes vs code-rule dictionary)
+ 18. Coverage gaps (station gaps by line)
 ```
 
 > **QC note:** Actions 11–17 are the agent-facing half of the dashboard's seven QC badges (Ahead-Back / Tie Ins / Manifests / On Joint / Dupe Atts / Begin-End / Validation). Each feed reads the same auth-blind assessment its page and XLSX export read — the badge count and the feed count are always the same source. A combined XLSX report is also available as a human download but is not a separate API.
+>
+> Action 18 is informational, not a badge. Gaps in survey coverage are expected during active construction — they are open pipe not yet surveyed, not mistakes. A gap is news when the user was under the impression that a section was complete. The progress summary (Action 1) now surfaces gaps alongside coverage, so a routine check already includes them; Action 18 pulls the full project picture in one call.
 
 Wait for the user's choice, then execute the corresponding action below.
 
@@ -156,7 +159,22 @@ for line_id in line_ids:
     result = response.json()
 ```
 
-Present as a table: line, baseline length, covered, percentage. Note lines with zero coverage. Note if lines share a baseline length (likely alignment placeholders).
+**Response now includes gap data alongside coverage.** Each line's response contains:
+- `baseline_length`, `covered`, `percentage` — coverage figures
+- `gap_filter` — the minimum distance (in the project's units) that counts as a gap on this line
+- `gaps` — list of gaps on this line; each gap has:
+  - `begin_station` / `end_station` — pretty (equation) station at each end of the gap
+  - `begin_station_raw` / `end_station_raw` — raw station values
+  - `length` — gap length
+  - `begin_point` / `end_point` — the bookend points on each side (`point_id`, `code`, `filename`)
+
+**Presenting results:**
+
+Lead with coverage: present a table of line, baseline length, covered, and percentage. Note lines with zero coverage. Note if lines share a baseline length (likely alignment placeholders).
+
+Then surface gaps: for each line that has gaps, list them with begin and end station and length. Frame gaps as open sections not yet surveyed — not errors. If a line has no gaps, say so (that is meaningful information on an active job).
+
+If the user was asking whether a specific section is complete and a gap falls in that range, call that out plainly.
 
 ---
 
@@ -834,11 +852,86 @@ If busts exist, group by `code`, then by `issue` type. For each group, list the 
 
 ---
 
+### 18. Coverage Gaps (Station Gaps by Line)
+
+*Returns all station gaps across the project — sections of the alignment where no survey points have been imported yet. Gaps are informational: open pipe not yet surveyed is expected during active construction. A gap is news when the user believed a section was complete.*
+
+```python
+import requests
+data = {
+    'username': '<username>',
+    'password': '<password>',
+    'project_alias': '<alias>'
+}
+response = requests.post('https://<server_name>/progress/json-gaps/', data=data)
+result = response.json()
+```
+
+Auth: staff OR Assignment membership on the project. This feed is never sandboxed — a gap is a property of the whole line's point adjacency, not of any one owner's data.
+
+**Response shape:**
+
+```
+{
+  "line_count": int,
+  "total_gaps": int,
+  "lines": [
+    {
+      "line_id": str,
+      "gap_filter": float,    # minimum distance that counts as a gap on this line
+      "gap_count": int,
+      "gaps": [
+        {
+          "begin_station": str,       # pretty (equation) station
+          "end_station": str,
+          "begin_station_raw": float,
+          "end_station_raw": float,
+          "length": float,
+          "begin_point": {
+            "point_id": int,
+            "code": str,
+            "filename": str
+          },
+          "end_point": {
+            "point_id": int,
+            "code": str,
+            "filename": str
+          }
+        },
+        ...
+      ]
+    },
+    ...
+  ]
+}
+```
+
+**Interpreting the response:**
+
+- `total_gaps` of zero means the entire project is covered end to end — no open sections. On an active job, state that clearly; it is meaningful.
+- `gap_filter` is the threshold in the project's distance units. Adjacencies shorter than this are not counted as gaps — they are the expected point spacing, not missing coverage. Each line has its own `gap_filter` setting.
+- Each gap is bounded by a `begin_point` and an `end_point` — the last surveyed point before the gap and the first after it. The `code` and `filename` on those bookends can help the user identify which crew or file is adjacent to the open section.
+- `begin_station` / `end_station` are the equation (pretty) stations — the ones that match the plan sheets. Use these when talking to the user. `begin_station_raw` / `end_station_raw` are available if the user asks for raw values.
+
+**Presenting results:**
+
+Lead with the headline: how many gaps across how many lines, or a clean-project confirmation if `total_gaps` is zero.
+
+For each line with gaps, list them in station order: begin station → end station, length. Include the bookend filenames so the user can identify the crew boundary.
+
+Frame gaps as open sections to be surveyed, not errors. If the user was asking whether a specific station range is complete, compare explicitly against the gap list and answer directly.
+
+Do not present gaps and QC busts as the same kind of finding. They belong in the same conversation — both matter to a PM checking project status — but a gap means "not yet surveyed" and a bust means "surveyed, but something is wrong."
+
+---
+
 ## Natural Language Routing
 
 The user may not pick from the menu — they may just ask a question. Route intelligently:
 
 - "How far along is the project?" / "What's the progress?" → Action 1, fetch all lines automatically
+- "Are there any gaps?" / "What sections haven't been surveyed?" / "Is the mainline complete?" → Action 1 (gaps are now in the progress response — no separate call needed unless the user wants the full project picture, in which case use Action 18)
+- "Show me all the gaps" / "Give me a gap report" / "What's missing?" → Action 18
 - "How many points?" / "How many welds?" → Action 2, use `primary_weld` from project object
 - "What files have been imported?" / "Who surveyed last week?" → Action 4
 - "What does code X mean?" → answer from held code rules, no API call needed
