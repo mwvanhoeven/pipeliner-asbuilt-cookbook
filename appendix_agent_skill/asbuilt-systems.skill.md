@@ -130,11 +130,16 @@ QC
  16. Begin-End (alternating marker continuity)
  17. Validation (attributes vs code-rule dictionary)
  18. Coverage gaps (station gaps by line)
+
+Reports
+ 19. Depth of Cover Report
 ```
 
 > **QC note:** Actions 11–17 are the agent-facing half of the dashboard's seven QC badges (Ahead-Back / Tie Ins / Manifests / On Joint / Dupe Atts / Begin-End / Validation). Each feed reads the same auth-blind assessment its page and XLSX export read — the badge count and the feed count are always the same source. A combined XLSX report is also available as a human download but is not a separate API.
 >
 > Action 18 is informational, not a badge. Gaps in survey coverage are expected during active construction — they are open pipe not yet surveyed, not mistakes. A gap is news when the user was under the impression that a section was complete. The progress summary (Action 1) now surfaces gaps alongside coverage, so a routine check already includes them; Action 18 pulls the full project picture in one call.
+>
+> Action 19 is a report feed, not a QC check — no bust badge, no pass/fail verdict. The cover report hands over every measured depth and renders no compliance judgment. See Action 19 for the doctrine that governs this design.
 
 Wait for the user's choice, then execute the corresponding action below.
 
@@ -925,6 +930,100 @@ Do not present gaps and QC busts as the same kind of finding. They belong in the
 
 ---
 
+### 19. Depth of Cover Report
+
+*Returns the depth-of-cover report for a line — pairs each Online (pipe) shot with the nearest ground-Cover shot and computes the elevation difference between them. This is the JSON twin of the Vertical Profile page's Depth of Cover CSV, read from the same assessment so the two can never disagree.*
+
+**Before calling:** you need at least one Online code and one Cover code. Ask the user which codes to use, or check the held code rules for codes where `on_line == True` (for Online) and a matching ground-survey code convention for Cover. If the user is unsure, list the on-line codes from the held context and ask them to pick.
+
+```python
+import requests
+data = {
+    'username': '<username>',
+    'password': '<password>',
+    'project_alias': '<alias>',
+    'line_id': '<line_id>',          # default: 'primary'
+    'codes': ['<online_code>'],       # repeated — add more entries for multiple Online codes
+    'cover': ['<cover_code>'],        # repeated — add more entries for multiple Cover codes
+    'inputStation': 5.0,              # Station Difference Limit; default 5.0
+    'inputInverse': 10.0             # Offset Limit (2D inverse); default 10.0
+}
+response = requests.post('https://<server_name>/profile/json-cover-report/', data=data)
+result = response.json()
+```
+
+Auth: standard — `authenticate()` checks for staff status or Assignment membership on the project. A sandboxed Contributor pull returns only their own Online shots.
+
+**Response shape:**
+
+```
+{
+  "_meta": { ... },        # semantic orientation block — see note below
+  "project_alias": str,
+  "line_id": str,
+  "online_codes": [str, ...],
+  "cover_codes": [str, ...],
+  "station_filter": float,
+  "inverse_filter": float,
+  "pair_count": int,
+  "pairs": [
+    {
+      "station": str,
+      "point_id": int,
+      "code": str,
+      "owner": str,
+      "attributes": [{"name": str, "value": str}],
+      "cover": {
+        "point_id": int,
+        "code": str,
+        "N": float,
+        "E": float,
+        "Z": float,
+        "station_delta": float,
+        "inverse_2d": float,
+        "delta_z": float         # cover_elevation − online_elevation (dirt over pipe)
+      }
+                                 # or null — see "Null cover" below
+    },
+    ...
+  ]
+}
+```
+
+**Interpreting the response:**
+
+`pair_count` is the number of Online shots returned. Present this first — it tells the user immediately how much of the line was covered by their code selection.
+
+Each pair is one Online shot. The `cover` block is the nearest qualifying Cover shot within both filter limits. When `cover` is `null`, no Cover shot qualified for that Online point — depth is **unmeasured there, not zero.** A null is an open question on the survey record, not a value.
+
+`delta_z` is `cover_elevation − online_elevation`. Positive means dirt over pipe; larger is deeper. This is the depth figure — it is a measurement, not a verdict.
+
+**One Online point may appear twice** in the response. This is by design: a single pipe shot can be both the behind-match for one Cover shot and the ahead-match for the next. It is not a duplication error.
+
+The `_meta` block at the top of the live response carries field definitions and interpretation guidance including the no-judgment guards described below. It is not reproduced in this recipe — pull a live response to read it.
+
+**The refusal — and why it exists:**
+
+DH renders no compliance verdict on depth of cover. Regulatory-acceptable depth varies by pipe class, location class, regulator, and crossing type — and that determination belongs to a licensed engineer or the project's regulatory filing, not to the platform. The cover report hands you every measurement and judges none of them.
+
+**The agent must not declare a cover violation on DH's behalf.** When you present these numbers to the user, present the numbers. Do not append "these three are too shallow" or "that's a violation." If the user asks whether a value is compliant, the correct response is: the regulation defines what's acceptable, the measurement is here, that determination is theirs to make.
+
+This is not a gap in the platform — it is a deliberate design. The chart's old red-stripline judgment was removed because a sea of red breeds panic and invites pencil-whipping: signing the record clean to make the red go away. DH won't manufacture the pressure that corrupts the record it exists to keep honest.
+
+**Presenting results:**
+
+Lead with pair count and null count — how many Online shots came back, and how many had no qualifying Cover shot. Nulls warrant a mention up front: unmeasured stations may indicate gaps in the ground-survey data or filter limits that are too tight for the site conditions.
+
+Present the pairs in station order. For each: station, `delta_z` (labeled clearly as depth of cover, in the project's distance units), and `owner`. Include attributes if the user asks — they carry the pipe specs (OD, wall, class) that give the depth number its context.
+
+For null pairs, list the station and note that no Cover shot qualified. If there are many, suggest the user check whether the Cover code and filter parameters match the field convention used on that survey.
+
+Do not summarize with a pass/fail count. Do not flag individual values as violations. Present the measurement; let the engineer judge.
+
+> **Note:** `delta_z` is in the project's native distance units. If `must_scale` is True, raw coordinates are in US survey feet — flag this to the user when presenting depth values.
+
+---
+
 ## Natural Language Routing
 
 The user may not pick from the menu — they may just ask a question. Route intelligently:
@@ -948,6 +1047,8 @@ The user may not pick from the menu — they may just ask a question. Route inte
 - "Check begin-end" / "Are the alternating markers correct?" / "Any begin-end issues?" → Action 16
 - "Validate attributes" / "Any code violations?" / "Check validation" → Action 17
 - "How many QC busts?" / "What's the QC status?" → run all seven QC feeds (11–17) and present a summary table: badge name, bustcount, is_clean
+- "What's the depth of cover?" / "Show me the cover report" / "Pull the depth report" → Action 19; ask for Online and Cover codes if not already known
+- "Are there any cover issues?" / "Which stations are shallow?" → Action 19; present the numbers and decline to render a compliance verdict — the measurement is yours, the judgment is the engineer's
 
 When the answer is already in held context, answer without making another API call.
 
